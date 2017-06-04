@@ -5,6 +5,7 @@ from .utils import checks
 from __main__ import send_cmd_help
 
 #Created by The Tasty Jaffa
+#Descriptions to be improved by idlechatter
 #Requested by idlechatter
 #Thanks to Tobotimus for helping with the listener etc
 
@@ -13,17 +14,24 @@ class TempVoice:
         self.bot = bot
         self.check_empty = dataIO.load_json("data/Tasty/TempVoice/VoiceChannel.json")
         self.settings = dataIO.load_json("data/Tasty/TempVoice/settings.json")
+        for x in self.bot.servers:
+            try:
+                print(self.settings[x.id])
+            except:
+                self.settings[x.id]={
+                    'role':None,
+                    'channel':None,
+                    'type':False,
+                    }
+        dataIO.save_json("data/Tasty/TempVoice/settings.json", self.settings)
 
     @commands.group(name="voiceset", pass_context=True)
     @checks.admin()
     async def VoiceSet(self, ctx):
         """Changes the settings for this cog use with no sub to get info on how to use, and current setings"""
         if ctx.invoked_subcommand is None:
-            try:
-                info = ''.join('{}{}\n'.format(key, val) for key, val in self.settings[ctx.message.server.id].items())
-                await self.bot.send_message(ctx.message.channel, info)
-            except KeyError:
-                pass
+            info = ''.join('{}{}\n'.format(key, val) for key, val in self.settings[ctx.message.server.id].items())
+            await self.bot.send_message(ctx.message.channel, info)
             
             await self.bot.send_message(ctx.message.channel, "`To change the settings please use '[p]voiceset channel <channel id/name>' to make a channel for that user - use '[p]Voiceset role <name(use if entering name) or id(use if entering role id (get by using [p]roleid))> <rolename or roleid>' to limit who can make temp voice channels - Use '[p]Voiceset mode <mode>' to change the mode <1>=Join channel - Temp channel created - user moved <2> user uses '[p]voice' to make a temp voice channel.`")
 
@@ -32,14 +40,14 @@ class TempVoice:
     @checks.admin_or_permissions(manage_channels=True)
     async def channel(self, ctx, channel_in:str):
         """Enter **Voice** channel id or name Note channel names do not work if they have space in them."""
-        channel = ctx.message.server.get_channel(channel_in)#basicly just to check if it's an actual channel
-        if channel is not None:
+        channel = self.bot.get_channel(channel_in)#basicly just to check if it's an actual channel
+        if channel is None:
             channel = discord.utils.get(ctx.message.server.channels, name=channel_in, type=discord.ChannelType.voice)
             if channel is None:
                 await self.bot.send_message(ctx.message.channel, "That channel was not found")
                 return
         self.settings[ctx.message.server.id]['channel']=channel.id
-        dataIO.save_json("data/Tasty/TempVoice/settings.json")
+        dataIO.save_json("data/Tasty/TempVoice/settings.json", self.settings)
 
 
     @VoiceSet.command(name="role", pass_context=True)
@@ -60,12 +68,13 @@ class TempVoice:
         else:
             await self.bot.send_message(ctx.message.channel, "Please use either **id** or **name** like this [p]voiceset role name TempVoice")
 
+        dataIO.save_json("data/Tasty/TempVoice/settings.json", self.settings)
     
-    async def AutoTempVoice(self,user):
+    async def AutoTempVoice(self, before, user): #Is called when Someone joins the voice channel
         """Automaticly checks the voice channel for users and makes a channel for them"""
         for x in self.settings:
-            if x['type']==True:
-                if x['channel']==user.voice_channel.id:
+            if bool(x['type'])==True:
+                if int(x['channel'])==user.voice_channel.id:
                     try:
                         perms = discord.PermissionOverwrite(mute_members=True, deafen_members=True, manage_channels=True)#Sets permisions
                         perms = discord.ChannelPermissions(target=user, overwrite=perms)#Sets the channel permissions for the person who sent the message
@@ -89,7 +98,8 @@ class TempVoice:
             self.settings[ctx.message.server.id]['type']=True
         else:
             await self.bot.send_message(ctx.message.channel, "Sorry that's not a valid type")
-                                        
+
+        dataIO.save_json("data/Tasty/TempVoice/settings.json", self.settings)                  
     
     @commands.command(name="voice", pass_context=True)
     async def voice(self, ctx, name:str=''): #actual command
@@ -151,7 +161,7 @@ def check_files(): #Creates json files in the folder
         dataIO.save_json("data/Tasty/TempVoice/VoiceChannel.json", [])
 
     if not dataIO.is_valid_json("data/Tasty/TempVoice/settings.json"):
-        print("Creating empty settings.json...")
+        print("Creating empty settings.json...")    
         dataIO.save_json("data/Tasty/TempVoice/settings.json", {})
 
 def setup(bot):
