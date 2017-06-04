@@ -3,6 +3,7 @@ from discord.ext import commands
 from .utils.dataIO import dataIO
 
 #Created by The Tasty Jaffa
+#Idea by idlechatter
 
 class TempVoice:
     def __init__(self, bot):
