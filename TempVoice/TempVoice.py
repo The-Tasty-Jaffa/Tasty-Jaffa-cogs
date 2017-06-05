@@ -5,9 +5,8 @@ from .utils import checks
 from __main__ import send_cmd_help
 
 #Created by The Tasty Jaffa
-#Descriptions to be improved by idlechatter
 #Requested by idlechatter
-#Thanks to Tobotimus for helping with the listener etc
+#Thanks to Tobotimus for helping with the listener function
 
 class TempVoice:
     def __init__(self, bot):
@@ -16,7 +15,7 @@ class TempVoice:
         self.settings = dataIO.load_json("data/Tasty/TempVoice/settings.json")
         for x in self.bot.servers:
             try:
-                print(self.settings[x.id])
+                print("Testing Values for settings.json in /Tatsy/TempVoice")
             except:
                 self.settings[x.id]={
                     'role':None,
@@ -72,19 +71,19 @@ class TempVoice:
     
     async def AutoTempVoice(self, before, user): #Is called when Someone joins the voice channel
         """Automaticly checks the voice channel for users and makes a channel for them"""
-        for x in self.settings:
-            if bool(x['type'])==True:
-                if int(x['channel'])==user.voice_channel.id:
+        for value in list(self.settings.items()):
+            if value[1]['type']==True:
+                if value[1]['channel']==user.voice_channel.id:
                     try:
                         perms = discord.PermissionOverwrite(mute_members=True, deafen_members=True, manage_channels=True)#Sets permisions
                         perms = discord.ChannelPermissions(target=user, overwrite=perms)#Sets the channel permissions for the person who sent the message
-                        channel = await self.bot.create_channel(ctx.message.server, user, perms, type=discord.ChannelType.voice)#creates a channel          
-                        self.check_empty.append([channel.id, ctx.message.server.id]) #Multidimentional list or array
+                        channel = await self.bot.create_channel(self.bot.get_server(value[0]), user.name, perms, type=discord.ChannelType.voice)#creates a channel          
+                        self.check_empty.append([channel.id, value[0]]) #Multidimentional list or array
                         dataIO.save_json("data/Tasty/VoiceChannel.json", self.check_empty)#saves the new file
+                        await self.bot.move_member(user, channel)
                         
                     except Exception as e:
                         print(e)
-                        await self.bot.send_message(ctx.message.channel, "An error occured - check logs")
                         pass
             
                 
