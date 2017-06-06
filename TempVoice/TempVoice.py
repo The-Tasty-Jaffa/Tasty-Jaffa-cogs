@@ -90,7 +90,7 @@ class TempVoice:
     @VoiceSet.command(name="type", pass_context=True)
     @checks.admin()
     async def VoiceType(self, ctx, Voice:int):
-        """Sets the Voice channel creation type - [1] = use of command - [2] = Use of channel"""
+        """Sets the Voice channel creation type - [1] = use of channel - [2] = Use of command"""
         if Voice == 2:
             self.settings[ctx.message.server.id]['type']=False
         elif Voice == 1:
