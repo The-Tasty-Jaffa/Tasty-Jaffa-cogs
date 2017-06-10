@@ -5,4 +5,4 @@ These are a collection of cogs I have made on various requests. These cogs are i
   TempVoice {Requires the "discord" lib}
  
  
-To contact The Tasty Jaffa DM him in the "Red Discord Server" found here - https://discord.gg/red
+To contact The Tasty Jaffa DM him in the "Red Discord Server" found here - https://discord.gg/MbKwDGC
