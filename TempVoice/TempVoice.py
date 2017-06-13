@@ -44,7 +44,7 @@ class TempVoice:
             else:
                 rep = "2"
                 
-            em.add_field(name="role", value=rep, inline=False)
+            em.add_field(name="Mode/Type", value=rep, inline=False)
             em.add_field(name="channel",value = ctx.message.server.get_channel(self.settings[ctx.message.server.id]['channel']).name, inline=False)
             em.add_field(name="Role", value = get_role(ctx, self.settings[ctx.message.server.id]['role']), inline=False)
             del rep
