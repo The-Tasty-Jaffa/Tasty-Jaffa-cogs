@@ -63,19 +63,19 @@ remove - Removes a user to have the abillity to use the say command"""
         """The bot says what yuo tell it to"""
         channel = ctx.message.channel
         auth = ctx.message.author
-
-        say=False
-        if channel.permissions_for(ctx.message.server.me).manage_messages:         
-            for u_id in self.say_perm:
-                if ctx.message.author.id == u_id:
-                    say=True 
-            if say:
-                await self.bot.delete_message(ctx.message)
-                await self.bot.send_message(channel, text)
+        if '@everyone' not in ctx.message.content and '@here' not in ctx.message.content:
+            say=False
+            if channel.permissions_for(ctx.message.server.me).manage_messages:         
+                for u_id in self.say_perm:
+                    if ctx.message.author.id == u_id:
+                        say=True 
+                if say:
+                    await self.bot.delete_message(ctx.message)
+                    await self.bot.send_message(channel, text)
+                else: 
+                    await self.bot.say("You need to buy the say command from the BotNLoad Loyalty store first! Join the server by using the `!discord` command.") 
             else: 
-                await self.bot.say("You need to buy the say command from the BotNLoad Loyalty store first! Join the server by using the `!discord` command.") 
-        else: 
-            await self.bot.say("This command requires the **Manage Messages** permission.") 
+                await self.bot.say("This command requires the **Manage Messages** permission.") 
 
 
 def setup(bot):
