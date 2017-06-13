@@ -12,7 +12,7 @@ class say:
         self.bot = bot
         self.say_perm = dataIO.load_json("data/admin/say.json")
         
-    @commands.group(pass_context=True, no_pm=True, invoke_without_command=True)
+    @commands.group(name="setsay", pass_context=True, no_pm=True, invoke_without_command=True)
     async def sayset(self, ctx):
         """The 'Say' command set
 
