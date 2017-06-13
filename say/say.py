@@ -13,7 +13,7 @@ class say:
         self.say_perm = dataIO.load_json("data/admin/say.json")
         
     @commands.group(pass_context=True, no_pm=True, invoke_without_command=True)
-    async def sayset(self, ctx):
+    async def setsay(self, ctx):
         """The 'Say' command set
 
 add - Adds a user to have the abillity to use the say command
@@ -22,7 +22,7 @@ remove - Removes a user to have the abillity to use the say command"""
         if ctx.invoked_subcommand is None:
             await self.bot.send_message(ctx.message.channel, "```Please use the say command with: \n add - Adds a user to have the abillity to use the say command \n remove - Removes a user to have the abillity to use the say command```")
 
-    @sayset.command(name="list", pass_context=True)
+    @setsay.command(name="list", pass_context=True)
     @checks.is_owner()
     async def say_list(self,ctx):
         perm_name = []
@@ -37,7 +37,7 @@ remove - Removes a user to have the abillity to use the say command"""
 
         self.bot.send_message(ctx.message.channel, msg)
         
-    @sayset.command(name="add", pass_context=True, no_pm=True)
+    @setsay.command(name="add", pass_context=True, no_pm=True)
     @checks.is_owner()
     async def say_add (self, ctx, user: discord.Member):
         """Adds a [user] to have the abillity to use the say command"""
@@ -46,7 +46,7 @@ remove - Removes a user to have the abillity to use the say command"""
         await self.bot.say("Done!")
         await self.bot.delete_message(ctx.message)
 
-    @sayset.command(name="remove", pass_context=True, no_pm=True)
+    @setsay.command(name="remove", pass_context=True, no_pm=True)
     @checks.is_owner()
     async def say_remove (self, ctx, user: discord.Member):
         """Removes a [user] to have the abillity to use the say command"""
