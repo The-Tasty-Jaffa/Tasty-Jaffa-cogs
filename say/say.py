@@ -75,7 +75,9 @@ remove - Removes a user to have the abillity to use the say command"""
                 else: 
                     await self.bot.say("You need to buy the say command from the BotNLoad Loyalty store first! Join the server by using the `!discord` command.") 
             else: 
-                await self.bot.say("This command requires the **Manage Messages** permission.") 
+                await self.bot.say("This command requires the **Manage Messages** permission.")
+        else:
+            await self.bot.send_message(ctx.message.channel, "Woh! {}, please don't do that".format(ctx.message.author.mention))
 
 
 def setup(bot):
