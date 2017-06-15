@@ -26,16 +26,15 @@ remove - Removes a user to have the abillity to use the say command"""
     @checks.is_owner()
     async def say_list(self,ctx):
         perm_name = []
-        for u_id in self.say_perm:
-            for usr_mem in self.bot.get_all_members():
-                if usr_mem.id == u_id:
-                    perm_name.append(usr_mem.name)
+        for x in self.say_perm:
+            perm_name.append(discord.utils.get(self.bot.get_all_members(), id=x).name)
                     
         msg = ("+ Permited\n"
                "{}\n\n"
                "".format(", ".join(sorted(perm_name))))
 
-        self.bot.send_message(ctx.message.channel, msg)
+        for page in pagify(msg, [" "], shorten_by=16):
+            await self.bot.say(box(page.lstrip(" "), lang="diff"))
         
     @sayset.command(name="add", pass_context=True, no_pm=True)
     @checks.is_owner()
