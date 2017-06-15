@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 from .utils import checks
 from .utils.dataIO import dataIO
+from .utils.chat_formatting import pagify, box
 import logging
 
 #The Tasty Jaffa
