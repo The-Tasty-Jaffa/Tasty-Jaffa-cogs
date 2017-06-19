@@ -23,6 +23,7 @@ class TempVoice:
         for x in self.bot.servers:
             try:
                 print("Testing Values for settings.json in /Tatsy/TempVoice")
+                self.settings[x.id]
             except:
                 self.settings[x.id]={
                     'role':None,
