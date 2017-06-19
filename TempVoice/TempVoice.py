@@ -25,6 +25,7 @@ class TempVoice:
                 print("Testing Values for settings.json in /Tatsy/TempVoice")
                 self.settings[x.id]
             except:
+
                 self.settings[x.id]={
                     'role':None,
                     'channel':None,
@@ -36,6 +37,7 @@ class TempVoice:
     @checks.admin()
     async def VoiceSet(self, ctx):
         """Changes the settings for this cog use with no sub to get info on how to use, and current setings"""
+
         if ctx.invoked_subcommand is None:
             info = ''.join('{}{}\n'.format(key, val) for key, val in self.settings[ctx.message.server.id].items())
             em = discord.Embed(title="Tempary voice channel settings", colour=0xff0000)
@@ -45,8 +47,12 @@ class TempVoice:
             else:
                 rep = "2"
                 
-            em.add_field(name="Mode/Type", value=rep, inline=False)
-            em.add_field(name="channel",value = ctx.message.server.get_channel(self.settings[ctx.message.server.id]['channel']).name, inline=False)
+            em.add_field(name="Type", value=rep, inline=False)
+            try:
+                em.add_field(name="channel",value = ctx.message.server.get_channel(self.settings[ctx.message.server.id]['channel']).name, inline=False)
+            except:
+                pass
+            
             em.add_field(name="Role", value = get_role(ctx, self.settings[ctx.message.server.id]['role']), inline=False)
             del rep
     
