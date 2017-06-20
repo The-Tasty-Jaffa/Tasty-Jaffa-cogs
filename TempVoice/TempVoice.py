@@ -40,7 +40,7 @@ class TempVoice:
 
         if ctx.invoked_subcommand is None:
             info = ''.join('{}{}\n'.format(key, val) for key, val in self.settings[ctx.message.server.id].items())
-            em = discord.Embed(title="Tempary voice channel settings", desciption="`To change the settings please use '[p]voiceset channel <channel id/name>' to make a channel for that user - use '[p]Voiceset role <name(use if entering name) or id(use if entering role id (get by using [p]roleid))> <rolename or roleid>' to limit who can make temp voice channels - Use '[p]Voiceset mode <mode>' to change the mode <1>=Join channel - Temp channel created - user moved <2> user uses '[p]voice' to make a temp voice channel.`", colour=0xff0000)
+            em = discord.Embed(title="Tempary voice channel settings", description="`To change the settings please use '[p]voiceset channel <channel id/name>' to make a channel for that user - use '[p]Voiceset role <name(use if entering name) or id(use if entering role id (get by using [p]roleid))> <rolename or roleid>' to limit who can make temp voice channels - Use '[p]Voiceset mode <mode>' to change the mode <1>=Join channel - Temp channel created - user moved <2> user uses '[p]voice' to make a temp voice channel.`", colour=0xff0000)
             
             if self.settings[ctx.message.server.id] == True:
                 rep = "1"
