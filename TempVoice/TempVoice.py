@@ -23,7 +23,9 @@ class TempVoice:
         for x in self.bot.servers:
             try:
                 print("Testing Values for settings.json in /Tatsy/TempVoice")
+                self.settings[x.id]
             except:
+
                 self.settings[x.id]={
                     'role':None,
                     'channel':None,
@@ -35,17 +37,22 @@ class TempVoice:
     @checks.admin()
     async def VoiceSet(self, ctx):
         """Changes the settings for this cog use with no sub to get info on how to use, and current setings"""
+
         if ctx.invoked_subcommand is None:
             info = ''.join('{}{}\n'.format(key, val) for key, val in self.settings[ctx.message.server.id].items())
-            em = discord.Embed(title="Tempary voice channel settings", colour=0xff0000)
+            em = discord.Embed(title="Tempary voice channel settings", description="`To change the settings please use '[p]voiceset channel <channel id/name>' to make a channel for that user - use '[p]Voiceset role <name(use if entering name) or id(use if entering role id (get by using [p]roleid))> <rolename or roleid>' to limit who can make temp voice channels - Use '[p]Voiceset mode <mode>' to change the mode <1>=Join channel - Temp channel created - user moved <2> user uses '[p]voice' to make a temp voice channel.`", colour=0xff0000)
             
             if self.settings[ctx.message.server.id] == True:
                 rep = "1"
             else:
                 rep = "2"
                 
-            em.add_field(name="Mode/Type", value=rep, inline=False)
-            em.add_field(name="channel",value = ctx.message.server.get_channel(self.settings[ctx.message.server.id]['channel']).name, inline=False)
+            em.add_field(name="Type", value=rep, inline=False)
+            try:
+                em.add_field(name="channel",value = ctx.message.server.get_channel(self.settings[ctx.message.server.id]['channel']).name, inline=False)
+            except:
+                em.add_field(name="channel",value = "None", inline=False)
+            
             em.add_field(name="Role", value = get_role(ctx, self.settings[ctx.message.server.id]['role']), inline=False)
             del rep
     
@@ -53,19 +60,20 @@ class TempVoice:
                     
             await self.bot.send_message(ctx.message.channel, embed=em)
             
-            await self.bot.send_message(ctx.message.channel, "`To change the settings please use '[p]voiceset channel <channel id/name>' to make a channel for that user - use '[p]Voiceset role <name(use if entering name) or id(use if entering role id (get by using [p]roleid))> <rolename or roleid>' to limit who can make temp voice channels - Use '[p]Voiceset mode <mode>' to change the mode <1>=Join channel - Temp channel created - user moved <2> user uses '[p]voice' to make a temp voice channel.`")
-
 
     @VoiceSet.command(name="channel", pass_context=True)
     @checks.admin_or_permissions(manage_channels=True)
     async def channel(self, ctx, channel_in:str):
         """Enter **Voice** channel id or name Note channel names do not work if they have space in them."""
+        
         channel = self.bot.get_channel(channel_in)#basicly just to check if it's an actual channel
         if channel is None:
             channel = discord.utils.get(ctx.message.server.channels, name=channel_in, type=discord.ChannelType.voice)
+            
             if channel is None:
                 await self.bot.send_message(ctx.message.channel, "That channel was not found")
                 return
+            
         self.settings[ctx.message.server.id]['channel']=channel.id
         dataIO.save_json("data/Tasty/TempVoice/settings.json", self.settings)
 
@@ -76,14 +84,17 @@ class TempVoice:
         """sets the required role to use the [p]voice command"""
         if NoI == 'name':
             role = discord.utils.get(ctx.message.server.roles, name=role)
+            
             if role is not None:
                 self.settings[ctx.message.server.id]['role'] = role.id
+                
             else:
                 await self.bot.send_message(ctx.message.channel, "Sorry but that role could not be found")
 
         elif NoI=='id':
             if role is not None:
                 self.settings[ctx.message.server.id]['role'] = role.id
+                
         else:
             await self.bot.send_message(ctx.message.channel, "Please use either **id** or **name** like this [p]voiceset role name TempVoice")
 
@@ -91,6 +102,7 @@ class TempVoice:
     
     async def AutoTempVoice(self, before, user): #Is called when Someone joins the voice channel
         """Automaticly checks the voice channel for users and makes a channel for them"""
+        
         for value in list(self.settings.items()):
             if value[1]['type']==True:
                 if value[1]['channel']==user.voice_channel.id:
@@ -111,10 +123,13 @@ class TempVoice:
     @checks.admin()
     async def VoiceType(self, ctx, Voice:int):
         """Sets the Voice channel creation type - [1] = use of command - [2] = Use of channel"""
+        
         if Voice == 2:
             self.settings[ctx.message.server.id]['type']=False
+            
         elif Voice == 1:
             self.settings[ctx.message.server.id]['type']=True
+            
         else:
             await self.bot.send_message(ctx.message.channel, "Sorry that's not a valid type")
 
