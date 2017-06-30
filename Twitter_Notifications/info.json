@@ -1,0 +1,10 @@
+{
+    "AUTHOR" : "The Tasty Jaffa",
+    "INSTALL_MSG" : "__This cog requires 'Beautifulsoup' and also access the site https://twitter.com__ This cog will post tweets from the chosen twitter account.",
+    "NAME" : "TwitterFeed",
+    "SHORT" : "Sends tweets to the designated channel per server",
+    "DESCRIPTION" : "This cog will send notifcations with the tweet when a selected twitter user sends a tweet",
+    "TAGS" : ["twitter", "feeds", "notifcations"],
+    "REQUIREMENTS": "beautifulsoup4",
+    "HIDDEN" : false
+}
