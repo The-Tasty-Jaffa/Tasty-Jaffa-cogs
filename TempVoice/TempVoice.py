@@ -40,7 +40,7 @@ class TempVoice:
 
         if ctx.invoked_subcommand is None:
             info = ''.join('{}{}\n'.format(key, val) for key, val in self.settings[ctx.message.server.id].items())
-            em = discord.Embed(title="Tempary voice channel settings", description="`To change the settings please use '[p]voiceset channel <channel id/name>' to make a channel for that user - use '[p]Voiceset role <name(use if entering name) or id(use if entering role id (get by using [p]roleid))> <rolename or roleid>' to limit who can make temp voice channels - Use '[p]Voiceset mode <mode>' to change the mode <1>=Join channel - Temp channel created - user moved <2> user uses '[p]voice' to make a temp voice channel.`", colour=0xff0000)
+            em = discord.Embed(title="Tempary voice channel settings", description="`To change the settings please use '[p]voiceset channel <channel id/name>' to make a channel for that user - use '[p]Voiceset role <name(for role name) or id(for role id)> <rolename or roleid>' to limit who can make temp voice channels - Use '[p]Voiceset mode <mode>' to change the mode <1>=Join channel - Temp channel created - user moved <2> user uses '[p]voice' to make a temp voice channel.`", colour=0xff0000)
             
             if self.settings[ctx.message.server.id] == True:
                 rep = "1"
@@ -180,6 +180,13 @@ class TempVoice:
                     await self.bot.send_message(ctx.message.channel, "An error occured - check logs")
                     pass
 
+    async def server_join(self, server):
+        self.settings[server.id]={
+            'role':None,
+            'channel':None,
+            'type':False,
+            }
+
     async def Check(self): #Loops around untill channel is empty ~~ also A LOT of nested stuff
         DELAY = 60 #Delay in seconds
         
@@ -233,4 +240,5 @@ def setup(bot):
     loop = asyncio.get_event_loop()
     loop.create_task(n.Check())
     bot.add_listener(n.AutoTempVoice, 'on_voice_state_update') #Tahnkyou to Tobotimus for giving a simple example on listeners
+    bot.add_listener(n.server_join, "on_server_join")
     bot.add_cog(n)
