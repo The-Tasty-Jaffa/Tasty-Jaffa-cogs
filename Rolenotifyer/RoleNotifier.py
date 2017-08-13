@@ -1,26 +1,72 @@
 from discord.ext import commands
+from discord import Embed
+from .utils import checks
+from .utils.dataIO import dataIO
 
 #requested by Freud
 #programed by The Tasty Jaffa
 
-#V 0.1
-#Simple core structure.
-
 class Role_Updated:
     def __init__(self, bot):
         self.bot = bot
+        self.settings = dataIO.load_json("data/Tasty/AutoRoleDM/settings.json")
+        
     async def Role_Update_check(self, before, after):
 
-        check_roles = [r for r in after.roles if r not in before.roles] #This will add all roles that where not there before
-        
+        check_roles = [r for r in after.roles if r not in before.roles]
+        #print("check_roles", check_roles)
         for role in check_roles:
-            print(role.name)
-            print(role)
-            if role.name == "Member": #Checks if it is equal to a role called "Member" - This will be modifiable later
-                msg = "Hello {after.mention}, \n\nThanks for sticking around with RuneLinked! As you have now been with us for 24 hours you have now been granted the Member role! This role gives you permissions to change your nickname, attach images as well as an awesome purple colour! \n\nWhy not check out some of the awesome things in our discord such as our **Treasure Hunt**! This can be started by using the `!hunt` command in any channel. Also check out RuneInfo, a great runescape bot for all your needs. \n\nIf you have any questions feel free to ask one of the members of staff and we will be glad to help.\n\nThanks \n\n**The RuneLinked Team**".format(after=after)
-                await self.bot.send_message(after, msg)
+            #print("role.name: ",role.name)
+            #print("role: ",role)
+            #print("after.server.id: ",after.server.id, "\n")
+            
+            try: #Should catch index error (ie don't alert)
+                msg = self.settings[after.server.id][role.name]
+                await self.bot.send_message(after, msg.format(role.name, after.server.name, after.mention))
+            except:
+                pass
 
+    @commands.command(pass_context=True, name="setroles")
+    @checks.is_admin_or_permissions(manage_roles=True)
+    async def set_roles(self, ctx, role_name:str, msg:str="You have gained {0} role"):
+        """For documentation of this command check the gitpage, use speech marks for the <msg> paramater"""
+        await self.bot.send_message("This will dm a user with `{}` when then gain the `{}` role? \n\n __are you sure you want this? **y/n**__".format(msg, role_name))
+        responce = await self.bot.wait_for_message(channel = ctx.message.channel, author = ctx.message.author)
+        if responce.lower() == 'y':
+            self.settings[ctx.message.server.id][role_name] = msg
+            dataIO.save_json("data/Tasty/AutoRoleDM/settings.json", self.settings)
+            await self.bot.send_message(ctx.message.channel, "Saved! -- Make sure to have a look at the documention on the git repo page!")
+
+        else:
+            await self.bot.send_message(ctx.message.channel, "Aborted! -- Make sure to have a look at the documention on the git repo page!")
+
+    @commands.command(pass_context=True, name="listroles")
+    @checks.is_admin_or_permissions(manage_roles=True)
+    async def list_roles(self, ctx):
+        """Lists all the roles that have been given/set a notification for in this server."""
+
+        em = Embed(title="All roles and their notification messages")
+        for role_name, msg in self.settings[ctx.message.server.id].items():
+            em.set_field(role_name, msg, True)
+
+        await self.bot.send_message(ctx.message.channel, embed=em)
+
+    @commands.command(pass_context=True, name="RemoveRole")
+    @checks.is_admin_or_permissions()
+    async def remove_roles(self, ctx, role):
+        """Removes roles from notifications, use `[p]listroles` to find out what roles are set to be notifified"""
+        await self.bot.send_message("This will remove the `{}` role and people who gain this role will no longer be notified. \n\n__are you sure you want this? **y/n**__".format(msg, role_name))
+        responce = await self.bot.wait_for_message(channel = ctx.message.channel, author = ctx.message.author)
+        if responce.lower() == 'y':
+            del self.settings[ctx.message.server.id][role_name]
+            dataIO.save_json("data/Tasty/AutoRoleDM/settings.json", self.settings)
+            await self.bot.send_message(ctx.message.channel, "Saved! -- Make sure to have a look at the documention on the git repo page!")
+
+        else:
+            await self.bot.send_message(ctx.message.channel, "Aborted! --  Make sure to have a look at the documention on the git repo page!")
+
+            
 def setup(bot):
     n = Role_Updated(bot)
-    bot.add_listener(n.Role_Update_check, 'on_member_update') #Adds a listener -- This will call the "Roke_Update_check" def when a members status updates ("on_member_update")
+    bot.add_listener(n.Role_Update_check, 'on_member_update')
     bot.add_cog(n)
