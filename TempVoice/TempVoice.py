@@ -139,9 +139,6 @@ class TempVoice:
     async def voice(self, ctx, name:str=''): #actual command
         """Creates a voice channel use opptional argument <name> to spesify the name of the channel"""
         if self.settings[ctx.message.server.id]['type'] == False:
-            print()
-            print(ctx.message.author.roles)
-            print()
             roles = set(ctx.message.author.roles)
             if self.settings[ctx.message.server.id]['role'] is not None:
                 for role in roles:
@@ -197,7 +194,6 @@ class TempVoice:
                         current = self.bot.get_server(channel[1]).get_channel(channel[0]) #Get's the current channel 1st index (0) is the channel id, second (1) is the server id of that channel
                         
                         try:
-                            print("deleting", current.name)
                             await self.bot.delete_channel(current)
                             del self.check_empty[index] #Removes it from list
                             dataIO.save_json("data/Tasty/VoiceChannel.json",self.check_empty)# saves new list
@@ -209,7 +205,6 @@ class TempVoice:
                             await self.bot.send_message(ctx.message.channel, "An error occured - check logs")
 
                 except AttributeError: #Removes it from file if it does
-                    print("Removing Unfound channel")
                     del self.check_empty[index]
                     dataIO.save_json("data/Tasty/VoiceChannel.json",self.check_empty)
                     pass
