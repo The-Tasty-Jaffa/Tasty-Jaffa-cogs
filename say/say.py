@@ -73,7 +73,7 @@ remove - Removes a user to have the abillity to use the say command"""
                     await self.bot.delete_message(ctx.message)
                     await self.bot.send_message(channel, text)
                 else: 
-                    await self.bot.say("You need to buy the say command from the BotNLoad Loyalty store first! Join the server by using the `!discord` command.") 
+                    await self.bot.say("You need to be given this command") 
             else: 
                 await self.bot.say("This command requires the **Manage Messages** permission.")
         else:
