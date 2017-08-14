@@ -28,7 +28,7 @@ class Role_Updated:
         for role in check_roles:
             try: #Should catch index error (ie don't alert)
                 msg = self.settings[after.server.id][role.name] 
-                await self.bot.send_message(after, msg.format(role.name, after.server.name, after.mention))
+                await self.bot.send_message(after, msg.format(role.name, after.server.name, after.mention, after.name))
             except:
                 pass
 
