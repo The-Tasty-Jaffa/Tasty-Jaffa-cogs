@@ -10,15 +10,24 @@ class Role_Updated:
     def __init__(self, bot):
         self.bot = bot
         self.settings = dataIO.load_json("data/Tasty/AutoRoleDM/settings.json")
+         for x in self.bot.servers:
+            try:
+                print("Testing Values for settings.json in /Tatsy/AutoRoleDM")
+                self.settings[x.id]
+            except:
+
+                self.settings[x.id]={
+                    }
+        dataIO.save_json("data/Tasty/TempVoice/settings.json", self.settings)
         
     async def Role_Update_check(self, before, after):
 
         check_roles = [r for r in after.roles if r not in before.roles]
-        #print("check_roles", check_roles)
+        print("check_roles", check_roles)
         for role in check_roles:
-            #print("role.name: ",role.name)
-            #print("role: ",role)
-            #print("after.server.id: ",after.server.id, "\n")
+            print("role.name: ",role.name)
+            print("role: ",role)
+            print("after.server.id: ",after.server.id, "\n")
             
             try: #Should catch index error (ie don't alert)
                 msg = self.settings[after.server.id][role.name]
@@ -65,8 +74,25 @@ class Role_Updated:
         else:
             await self.bot.send_message(ctx.message.channel, "Aborted! --  Make sure to have a look at the documention on the git repo page!")
 
+     async def server_join(self, server):
+        self.settings[server.id]={
+        }
+
+def check_folders(): #Creates a folder
+    if not os.path.exists("data/Tasty/AutoRoleDM"):
+        print("Creating data/Tasty/AutoRoleDM folder...")
+        os.makedirs("data/Tasty/AutoRoleDM")
+
+def check_files(): #Creates json files in the folder
+    if not dataIO.is_valid_json("data/Tasty/AutoRoleDM/settings.json"):
+        print("Creating empty settings.json...")    
+        dataIO.save_json("data/Tasty/AutoRoleDM/settings.json", {})
+
             
 def setup(bot):
+    check_folders()
+    check_files()
     n = Role_Updated(bot)
     bot.add_listener(n.Role_Update_check, 'on_member_update')
+    bot.add_listener(n.server_join, "on_server_join")
     bot.add_cog(n)
