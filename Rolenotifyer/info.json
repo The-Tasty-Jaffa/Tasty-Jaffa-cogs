@@ -1,6 +1,6 @@
 {
     "AUTHOR" : "The Tasty Jaffa",
-    "INSTALL_MSG" : "Role notifier notifies people when they get a role in this server, use [p]help to find out more \n\n Programed by The Tasty Jaffa"
+    "INSTALL_MSG" : "Role notifier notifies people when they get a role in this server, use [p]help to find out more \n\n Programed by The Tasty Jaffa",
     "NAME" : "RoleNotifier",
     "SHORT" : "DMs a user when they gain a role",
     "DESCRIPTION" : "This cog - AutoRolenotifier will notify users when they get a role, messages can be customised per role and per sever",
