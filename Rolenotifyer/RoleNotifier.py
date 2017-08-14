@@ -6,7 +6,7 @@ import os
 
 #requested by Freud
 #programed by The Tasty Jaffa
-#Some help with gramma from Freud (and also testing it making sure it worked)
+#Some help with grammer from Freud (and also testing it making sure it worked)
 
 class RoleNotifier:
     def __init__(self, bot):
