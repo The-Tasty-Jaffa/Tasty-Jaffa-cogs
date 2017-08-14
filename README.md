@@ -5,7 +5,7 @@ These are a collection of cogs I have made on various requests. These cogs are i
 
   *TempVoice
   *Say
-  *AutoRoleNotification
+  *AutoRoleNotification (thank you to Freud for testing this with me)
  
  
 To contact The Tasty Jaffa, speak to him in his server found here - https://discord.gg/MbKwDGC
