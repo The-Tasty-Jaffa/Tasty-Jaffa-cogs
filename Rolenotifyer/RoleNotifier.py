@@ -41,9 +41,9 @@ class Role_Updated:
     @checks.admin_or_permissions(manage_roles=True)
     async def set_roles(self, ctx, role_name:str, msg:str="You have gained {0} role"):
         """For documentation of this command check the gitpage, use speech marks for the <msg> paramater"""
-        await self.bot.send_message("This will dm a user with `{}` when then gain the `{}` role? \n\n __are you sure you want this? **y/n**__".format(msg, role_name))
+        await self.bot.send_message(ctx.message.channel, "This will dm a user with `{}` when then gain the `{}` role? \n\n __are you sure you want this? **y/n**__".format(msg, role_name))
         response = await self.bot.wait_for_message(channel = ctx.message.channel, author = ctx.message.author)
-        if response.lower() == 'y':
+        if response.content.lower() == 'y':
             self.settings[ctx.message.server.id][role_name] = msg
             dataIO.save_json("data/Tasty/AutoRoleDM/settings.json", self.settings)
             await self.bot.send_message(ctx.message.channel, "Saved! -- Make sure to have a look at the documention on the git repo page!")
