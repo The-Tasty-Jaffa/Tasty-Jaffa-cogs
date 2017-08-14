@@ -31,11 +31,24 @@ class RoleNotifier:
                 await self.bot.send_message(after, msg.format(role.name, after.server.name, after.mention, after.name))
             except:
                 pass
-
+    
+    @commands.command(pass_context=True, name="Notifcationsyntax")
+    @checks.admin_or_permissions(manage_roles=True)
+    async def Notification_message_syntax(self, ctx):
+        """Provides infomation on the syntax of what is sent and how to use it"""
+        e = Embed(tile="Infomation on how to use the notification system")
+        em.add_field(name="Use of `{0}`", Value = "The name of the role that was gained")
+        em.add_field(name="Use of `{1}`", value = "The name of the server that the role was gained in")
+        em.add_field(name="Use of `{2}`", value = "Mentions the user who gained the role")
+        em.add_field(name="Use of `{3}`", value = "The name of the user who gained the role")
+        em.add_field(name="How to enter the msg", value='Use speech marks `" "` around the msg -> example `[p]setroles Member "Well done {2}! You have gained {0}!"`')
+        em.set_footer(text="This cog can be found here - https://github.com/The-Tasty-Jaffa/Tasty-Jaffa-cogs/")
+        await self.bot.send_message(ctx.message.channel, embed=em)
+    
     @commands.command(pass_context=True, name="setroles")
     @checks.admin_or_permissions(manage_roles=True)
-    async def set_roles(self, ctx, role_name:str, msg:str="Well done {2}! In {1} you have gained {0} role"):
-        """For documentation of this command check the gitpage, use speech marks for the <msg> paramater"""
+    async def set_roles(self, ctx, role_name:str, msg:str="Well done {2}! In {1} you have just gained {0} role"):
+        """For documentation of this command check the gitpage, use speech marks for the [msg] paramater"""
         await self.bot.send_message(ctx.message.channel, "This will dm a user with `{}` when then gain the `{}` role? \n\n __are you sure you want this? **y/n**__".format(msg, role_name))
         response = await self.bot.wait_for_message(channel = ctx.message.channel, author = ctx.message.author)
         if response.content.lower() == 'y':
@@ -54,7 +67,8 @@ class RoleNotifier:
         em = Embed(title="All roles and their notification messages")
         for role_name, msg in self.settings[ctx.message.server.id].items():
             em.add_field(name=role_name, value=msg, inline=True)
-
+        
+        em.set_footer(text="This cog can be found here - https://github.com/The-Tasty-Jaffa/Tasty-Jaffa-cogs/")
         await self.bot.send_message(ctx.message.channel, embed=em)
 
     @commands.command(name="removerole", pass_context=True)
