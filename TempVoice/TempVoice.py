@@ -33,7 +33,7 @@ class TempVoice:
                     }
         dataIO.save_json("data/Tasty/TempVoice/settings.json", self.settings)
 
-    @commands.group(name="voiceset", pass_context=True)
+    @commands.group(name="setvoice", pass_context=True)
     @checks.admin()
     async def VoiceSet(self, ctx):
         """Changes the settings for this cog use with no sub to get info on how to use, and current setings"""
@@ -63,12 +63,12 @@ class TempVoice:
 
     @VoiceSet.command(name="channel", pass_context=True)
     @checks.admin_or_permissions(manage_channels=True)
-    async def channel(self, ctx, channel_in:str):
+    async def channel(self, ctx, channel_id:str):
         """Enter **Voice** channel id or name Note channel names do not work if they have space in them."""
         
-        channel = self.bot.get_channel(channel_in)#basicly just to check if it's an actual channel
+        channel = self.bot.get_channel(channel_id)#basicly just to check if it's an actual channel
         if channel is None:
-            channel = discord.utils.get(ctx.message.server.channels, name=channel_in, type=discord.ChannelType.voice)
+            channel = discord.utils.get(ctx.message.server.channels, name=channel_id, type=discord.ChannelType.voice)
             
             if channel is None:
                 await self.bot.send_message(ctx.message.channel, "That channel was not found")
@@ -139,9 +139,6 @@ class TempVoice:
     async def voice(self, ctx, name:str=''): #actual command
         """Creates a voice channel use opptional argument <name> to spesify the name of the channel"""
         if self.settings[ctx.message.server.id]['type'] == False:
-            print()
-            print(ctx.message.author.roles)
-            print()
             roles = set(ctx.message.author.roles)
             if self.settings[ctx.message.server.id]['role'] is not None:
                 for role in roles:
@@ -197,7 +194,6 @@ class TempVoice:
                         current = self.bot.get_server(channel[1]).get_channel(channel[0]) #Get's the current channel 1st index (0) is the channel id, second (1) is the server id of that channel
                         
                         try:
-                            print("deleting", current.name)
                             await self.bot.delete_channel(current)
                             del self.check_empty[index] #Removes it from list
                             dataIO.save_json("data/Tasty/VoiceChannel.json",self.check_empty)# saves new list
@@ -209,7 +205,6 @@ class TempVoice:
                             await self.bot.send_message(ctx.message.channel, "An error occured - check logs")
 
                 except AttributeError: #Removes it from file if it does
-                    print("Removing Unfound channel")
                     del self.check_empty[index]
                     dataIO.save_json("data/Tasty/VoiceChannel.json",self.check_empty)
                     pass
