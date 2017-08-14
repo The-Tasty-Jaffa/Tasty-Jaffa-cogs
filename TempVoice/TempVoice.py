@@ -33,7 +33,7 @@ class TempVoice:
                     }
         dataIO.save_json("data/Tasty/TempVoice/settings.json", self.settings)
 
-    @commands.group(name="voiceset", pass_context=True)
+    @commands.group(name="setvoice", pass_context=True)
     @checks.admin()
     async def VoiceSet(self, ctx):
         """Changes the settings for this cog use with no sub to get info on how to use, and current setings"""
@@ -63,12 +63,12 @@ class TempVoice:
 
     @VoiceSet.command(name="channel", pass_context=True)
     @checks.admin_or_permissions(manage_channels=True)
-    async def channel(self, ctx, channel_in:str):
+    async def channel(self, ctx, channel_id:str):
         """Enter **Voice** channel id or name Note channel names do not work if they have space in them."""
         
-        channel = self.bot.get_channel(channel_in)#basicly just to check if it's an actual channel
+        channel = self.bot.get_channel(channel_id)#basicly just to check if it's an actual channel
         if channel is None:
-            channel = discord.utils.get(ctx.message.server.channels, name=channel_in, type=discord.ChannelType.voice)
+            channel = discord.utils.get(ctx.message.server.channels, name=channel_id, type=discord.ChannelType.voice)
             
             if channel is None:
                 await self.bot.send_message(ctx.message.channel, "That channel was not found")
