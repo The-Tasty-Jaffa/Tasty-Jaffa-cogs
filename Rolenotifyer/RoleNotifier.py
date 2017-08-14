@@ -18,7 +18,7 @@ class Role_Updated:
 
                 self.settings[x.id]={
                     }
-        dataIO.save_json("data/Tasty/TempVoice/settings.json", self.settings)
+        dataIO.save_json("data/Tasty/AutoRoleDM/settings.json", self.settings)
         
     async def Role_Update_check(self, before, after):
 
