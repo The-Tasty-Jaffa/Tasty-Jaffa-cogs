@@ -8,7 +8,7 @@ import os
 #programed by The Tasty Jaffa
 #Some help with gramma from Freud (and also testing it making sure it worked)
 
-class Role_Updated:
+class RoleNotifier:
     def __init__(self, bot):
         self.bot = bot
         self.settings = dataIO.load_json("data/Tasty/AutoRoleDM/settings.json")
@@ -90,7 +90,7 @@ def check_files(): #Creates json files in the folder
 def setup(bot):
     check_folders()
     check_files()
-    n = Role_Updated(bot)
+    n = RoleNotifier(bot)
     bot.add_listener(n.Role_Update_check, 'on_member_update')
     bot.add_listener(n.server_join, "on_server_join")
     bot.add_cog(n)
