@@ -6,7 +6,7 @@ import os
 
 #requested by Freud
 #programed by The Tasty Jaffa
-#Tested by Freud (And some small changes) ie correcting my Spelling
+#Some help with gramma from Freud (and also testing it)
 
 class Role_Updated:
     def __init__(self, bot):
@@ -25,21 +25,16 @@ class Role_Updated:
     async def Role_Update_check(self, before, after):
 
         check_roles = [r for r in after.roles if r not in before.roles]
-        #print("check_roles", check_roles)
         for role in check_roles:
-            #print("role.name: ",role.name)
-            #print("role: ",role)
-            #print("after.server.id: ",after.server.id, "\n")
-            
             try: #Should catch index error (ie don't alert)
-                msg = self.settings[after.server.id][role.name]
+                msg = self.settings[after.server.id][role.name] 
                 await self.bot.send_message(after, msg.format(role.name, after.server.name, after.mention))
             except:
                 pass
 
     @commands.command(pass_context=True, name="setroles")
     @checks.admin_or_permissions(manage_roles=True)
-    async def set_roles(self, ctx, role_name:str, msg:str="You have gained {0} role"):
+    async def set_roles(self, ctx, role_name:str, msg:str="Well done {2}! In {1} you have gained {0} role"):
         """For documentation of this command check the gitpage, use speech marks for the <msg> paramater"""
         await self.bot.send_message(ctx.message.channel, "This will dm a user with `{}` when then gain the `{}` role? \n\n __are you sure you want this? **y/n**__".format(msg, role_name))
         response = await self.bot.wait_for_message(channel = ctx.message.channel, author = ctx.message.author)
@@ -58,21 +53,23 @@ class Role_Updated:
 
         em = Embed(title="All roles and their notification messages")
         for role_name, msg in self.settings[ctx.message.server.id].items():
-            em.set_field(role_name, msg, True)
+            em.add_field(name=role_name, value=msg, inline=True)
 
         await self.bot.send_message(ctx.message.channel, embed=em)
 
-    @commands.command(pass_context=True, name="RemoveRole")
+    @commands.command(name="removerole", pass_context=True)
     @checks.admin_or_permissions(manage_roles=True)
-    async def remove_roles(self, ctx, role):
+    async def remove_roles(self, ctx, role_name):
         """Removes roles from notifications, use `[p]listroles` to find out what roles are set to be notifified"""
         await self.bot.send_message("This will remove the `{}` role and people who gain this role will no longer be notified. \n\n__are you sure you want this? **y/n**__".format(msg, role_name))
         response = await self.bot.wait_for_message(channel = ctx.message.channel, author = ctx.message.author)
         if response.lower() == 'y':
-            del self.settings[ctx.message.server.id][role_name]
-            dataIO.save_json("data/Tasty/AutoRoleDM/settings.json", self.settings)
-            await self.bot.send_message(ctx.message.channel, "Saved! -- Make sure to have a look at the documention on the git repo page!")
-
+            try:
+                del self.settings[ctx.message.server.id][role_name]
+                dataIO.save_json("data/Tasty/AutoRoleDM/settings.json", self.settings)
+                await self.bot.send_message(ctx.message.channel, "Saved! -- Make sure to have a look at the documention on the git repo page!")
+            except:
+                await self.bot.say("Woops! That role hasn't been set yet!")
         else:
             await self.bot.send_message(ctx.message.channel, "Aborted! --  Make sure to have a look at the documention on the git repo page!")
 
@@ -89,7 +86,7 @@ def check_files(): #Creates json files in the folder
     if not dataIO.is_valid_json("data/Tasty/AutoRoleDM/settings.json"):
         print("Creating empty settings.json...")    
         dataIO.save_json("data/Tasty/AutoRoleDM/settings.json", {})
-    
+  
 def setup(bot):
     check_folders()
     check_files()
