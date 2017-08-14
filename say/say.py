@@ -58,7 +58,7 @@ remove - Removes a user to have the abillity to use the say command"""
         except:
             self.bot.send_message(ctx.message.channel, "Are you sure that {} had the permision in the 1st place?".format(user.mention))
 
-    @commands.command(name="say", pass_context=True)
+    @commands.command(name="speak", pass_context=True)
     async def bot_say(self, ctx, *, text):
         """The bot says what yuo tell it to"""
         channel = ctx.message.channel
