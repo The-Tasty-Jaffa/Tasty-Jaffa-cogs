@@ -37,11 +37,11 @@ class RoleNotifier:
     async def Notification_message_syntax(self, ctx):
         """Provides infomation on the syntax of what is sent and how to use it"""
         em = Embed(tile="Infomation on how to use the notification system")
-        em.add_field(name="Use of `{0}`", Value = "The name of the role that was gained")
-        em.add_field(name="Use of `{1}`", value = "The name of the server that the role was gained in")
-        em.add_field(name="Use of `{2}`", value = "Mentions the user who gained the role")
-        em.add_field(name="Use of `{3}`", value = "The name of the user who gained the role")
-        em.add_field(name="How to enter the msg", value='Use speech marks `" "` around the msg -> example `[p]setroles Member "Well done {2}! You have gained {0}!"`')
+        em.add_field(name="Use of `{0}`", Value = "The name of the role that was gained", inline=True)
+        em.add_field(name="Use of `{1}`", value = "The name of the server that the role was gained in", inline=True)
+        em.add_field(name="Use of `{2}`", value = "Mentions the user who gained the role", inline=True)
+        em.add_field(name="Use of `{3}`", value = "The name of the user who gained the role", inline=True)
+        em.add_field(name="How to enter the msg", value='Use speech marks `" "` around the msg -> example `[p]setroles Member "Well done {2}! You have gained {0}!"`', inline=False)
         em.set_footer(text="This cog can be found here - https://github.com/The-Tasty-Jaffa/Tasty-Jaffa-cogs/")
         await self.bot.send_message(ctx.message.channel, embed=em)
     
