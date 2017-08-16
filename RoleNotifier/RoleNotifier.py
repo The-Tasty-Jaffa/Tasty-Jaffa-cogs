@@ -36,7 +36,7 @@ class RoleNotifier:
     @checks.admin_or_permissions(manage_roles=True)
     async def Notification_message_syntax(self, ctx):
         """Provides infomation on the syntax of what is sent and how to use it"""
-        e = Embed(tile="Infomation on how to use the notification system")
+        em = Embed(tile="Infomation on how to use the notification system")
         em.add_field(name="Use of `{0}`", Value = "The name of the role that was gained")
         em.add_field(name="Use of `{1}`", value = "The name of the server that the role was gained in")
         em.add_field(name="Use of `{2}`", value = "Mentions the user who gained the role")
