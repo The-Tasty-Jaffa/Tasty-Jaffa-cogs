@@ -40,7 +40,15 @@ class TempVoice:
 
         if ctx.invoked_subcommand is None:
             info = ''.join('{}{}\n'.format(key, val) for key, val in self.settings[ctx.message.server.id].items())
-            em = discord.Embed(title="Tempary voice channel settings", description="`To change the settings please use '[p]voiceset channel <channel id/name>' to make a channel for that user - use '[p]Voiceset role <name(for role name) or id(for role id)> <rolename or roleid>' to limit who can make temp voice channels - Use '[p]Voiceset mode <mode>' to change the mode <1>=Join channel - Temp channel created - user moved <2> user uses '[p]voice' to make a temp voice channel.`", colour=0xff0000)
+            em = discord.Embed(title="Tempary voice channel settings", description="""voice [name]
+\t Creates a Voice channel named after the user who called it or by the optional parameter [name] - must have " around it in order for it to use the whole name (some limitations such as length apply)
+setvoice
+\t channel <channel_id>
+\t\t Adds which voice channel it should look at which it will move people out of to make a new channel for
+\t role
+\t\t Sets the role which can use the commands/make temporary voice channels -- example - [p]setvoice role name autovoice
+\t voicetype <mode_number>
+\t\t Sets the mode type for the cog per server. This allows for "on joining a channel, it will make a new one" to useing the command [p]voice [name] mode numbers are --- 1 - use of channel, 2 - use of command Default is mode 2""", colour=0xff0000)
             
             if self.settings[ctx.message.server.id] == True:
                 rep = "1"
