@@ -41,7 +41,7 @@ class RoleNotifier:
         em.add_field(name="Use of `{1}`", value = "The name of the server that the role was gained in", inline=True)
         em.add_field(name="Use of `{2}`", value = "Mentions the user who gained the role", inline=True)
         em.add_field(name="Use of `{3}`", value = "The name of the user who gained the role", inline=True)
-        em.add_field(name="How to enter the msg", value='Use speech marks `" "` around the msg -> example `[p]setroles Member "Well done {2}! You have gained {0}!"`', inline=False)
+        em.add_field(name="How to enter the msg", value='Use speech marks `" "` around the msg -> example `[p]setroles Member "Well done {2}! You have gained {0}!"`', inline=True)
         em.set_footer(text="This cog can be found here - https://github.com/The-Tasty-Jaffa/Tasty-Jaffa-cogs/")
         await self.bot.send_message(ctx.message.channel, embed=em)
     
