@@ -14,7 +14,7 @@ class RoleNotifier:
         self.settings = dataIO.load_json("data/Tasty/AutoRoleDM/settings.json")
         for x in self.bot.servers:
             try:
-                print("Testing Values for settings.json in /Tatsy/AutoRoleDM")
+                print("Testing Values for settings.json in /Tasty/AutoRoleDM")
                 self.settings[x.id]
             except:
 
@@ -32,16 +32,16 @@ class RoleNotifier:
             except:
                 pass
     
-    @commands.command(pass_context=True, name="AutoRoleHelpTastyCogs")
+    @commands.command(pass_context=True, name="NotificationSystemHelp")
     @checks.admin_or_permissions(manage_roles=True)
-    async def Notification_message_syntax_on_Tasty_Jaffa_cogs(self, ctx):
+    async def Notification_message_syntax(self, ctx):
         """Provides infomation on the syntax of what is sent and how to use it"""
         em = Embed(tile="Infomation on how to use the notification system")
         em.add_field(name="Use of `{0}`", Value = "The name of the role that was gained", inline=True)
         em.add_field(name="Use of `{1}`", value = "The name of the server that the role was gained in", inline=True)
         em.add_field(name="Use of `{2}`", value = "Mentions the user who gained the role", inline=True)
         em.add_field(name="Use of `{3}`", value = "The name of the user who gained the role", inline=True)
-        em.add_field(name="How to enter the msg", value='Use speech marks `" "` around the msg -> example `[p]setroles Member "Well done {2}! You have gained {0}!"`', inline=True)
+        em.add_field(name="How to enter the msg", value='Use speech marks `" "` around the msg -> example `[p]setroles Member "Well done {2}! You have gained {0}!"`', inline=False)
         em.set_footer(text="This cog can be found here - https://github.com/The-Tasty-Jaffa/Tasty-Jaffa-cogs/")
         await self.bot.send_message(ctx.message.channel, embed=em)
     
