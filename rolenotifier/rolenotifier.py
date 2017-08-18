@@ -34,7 +34,7 @@ class RoleNotifier:
     
     @commands.command(pass_context=True, name="AutoRoleHelpTastyCogs")
     @checks.admin_or_permissions(manage_roles=True)
-    async def Notification_message_syntax(self, ctx):
+    async def Notification_message_syntax_on_Tasty_Jaffa_cogs(self, ctx):
         """Provides infomation on the syntax of what is sent and how to use it"""
         em = Embed(tile="Infomation on how to use the notification system")
         em.add_field(name="Use of `{0}`", Value = "The name of the role that was gained", inline=True)
