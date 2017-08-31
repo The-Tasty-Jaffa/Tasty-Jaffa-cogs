@@ -48,6 +48,9 @@ class PswdChannels:
                     elif self.bot.channel.type == "voice":
                         perms = discord.PermissionsOverwrite(connect=False)
                         await self.bot.edit_channel_permissions(channel, defualt_role, perms)
+                except:
+                    await self.bot.send_message(prv_channel, "An error occured... Make sure I have the right permissions")
+
 
                 self.storage[channel.id] = bcrypt.hashpw(password, bcrypt.gensalt())
                 dataIO.save_json("data/Tasty/pswdchannels/storage.json", self.storage)
