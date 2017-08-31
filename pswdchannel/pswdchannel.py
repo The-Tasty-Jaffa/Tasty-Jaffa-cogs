@@ -3,7 +3,7 @@ from discord.ext import commands
 from .utils.dataIO import dataIO
 from .utils import checks
 from __main__ import send_cmd_help
-import bycrypt, getpass
+import bcrypt, getpass
 
 #Created by The Tasty Jaffa
 
