@@ -1,0 +1,11 @@
+
+{
+    "AUTHOR" : "The Tasty Jaffa",
+    "INSTALL_MSG" : "__**WARNING: This cog requires heavy CPU usage**__ Adds pswds to channels",
+    "NAME" : "PswdChannels",
+    "SHORT" : "",
+    "DESCRIPTION" : "",
+    "TAGS" : ["utility", "admin", "channels", "management"],
+    "REQUIREMENTS": ["bcrypt"]
+    "HIDDEN" : false
+}
