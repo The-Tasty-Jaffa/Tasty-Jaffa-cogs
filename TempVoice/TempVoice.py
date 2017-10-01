@@ -47,10 +47,10 @@ setvoice
 \t\t Adds which voice channel it should look at which it will move people out of to make a new channel for
 \t role
 \t\t Sets the role which can use the commands/make temporary voice channels -- example - [p]setvoice role name autovoice
-\t voicetype <mode_number>
-\t\t Sets the mode type for the cog per server. This allows for "on joining a channel, it will make a new one" to useing the command [p]voice [name] mode numbers are --- 1 - use of channel, 2 - use of command Default is mode 2""", colour=0xff0000)
+\t type <mode_number>
+\t\t Sets the mode type for the cog per server. This allows for "on joining a channel, it will make a new one" to using a command""", colour=0xff0000)
             
-            if self.settings[ctx.message.server.id] == True:
+            if self.settings[ctx.message.server.id]["type"] is True:
                 rep = "1"
             else:
                 rep = "2"
@@ -62,8 +62,8 @@ setvoice
                 em.add_field(name="channel",value = "None", inline=False)
             
             em.add_field(name="Role", value = get_role(ctx, self.settings[ctx.message.server.id]['role']), inline=False)
+            
             del rep
-    
             em.set_author(name=ctx.message.server.name, icon_url=ctx.message.server.icon_url)
                     
             await self.bot.send_message(ctx.message.channel, embed=em)
@@ -130,7 +130,7 @@ setvoice
     @VoiceSet.command(name="type", pass_context=True)
     @checks.admin()
     async def VoiceType(self, ctx, Voice:int):
-        """Sets the Voice channel creation type - [1] = use of command - [2] = Use of channel"""
+        """Sets the Voice channel creation type - [2] = use of command - [1] = Use of channel"""
         
         if Voice == 2:
             self.settings[ctx.message.server.id]['type']=False
