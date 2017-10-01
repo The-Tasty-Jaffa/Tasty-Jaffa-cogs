@@ -60,7 +60,7 @@ remove - Removes a user to have the abillity to use the say command"""
 
     @commands.command(name="speak", pass_context=True)
     async def bot_say(self, ctx, *, text):
-        """The bot says what yuo tell it to"""
+        """The bot says what you tell it to"""
         channel = ctx.message.channel
         auth = ctx.message.author
         if '@everyone' not in ctx.message.content and '@here' not in ctx.message.content:
