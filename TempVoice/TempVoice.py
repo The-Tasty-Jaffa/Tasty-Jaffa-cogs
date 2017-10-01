@@ -69,7 +69,7 @@ setvoice
             await self.bot.send_message(ctx.message.channel, embed=em)
             
 
-    @VoiceSet.command(name="channel", pass_context=True)
+    @VoiceSet.command(pass_context=True)
     @checks.admin_or_permissions(manage_channels=True)
     async def channel(self, ctx, channel_id:str):
         """Enter **Voice** channel id or name Note channel names do not work if they have space in them."""
@@ -86,7 +86,7 @@ setvoice
         dataIO.save_json("data/Tasty/TempVoice/settings.json", self.settings)
 
 
-    @VoiceSet.command(name="role", pass_context=True)
+    @VoiceSet.command(pass_context=True)
     @checks.admin()
     async def role(self, ctx, NoI:str, role:str):#NoI standing for Name or Id
         """sets the required role to use the [p]voice command"""
@@ -145,7 +145,7 @@ setvoice
     
     @commands.command(name="voice", pass_context=True)
     async def voice(self, ctx, name:str=''): #actual command
-        """Creates a voice channel use opptional argument <name> to spesify the name of the channel"""
+        """Creates a voice channel use opptional argument <name> to spesify the name of the channel, Use `" "` around the name of the channel"""
         if self.settings[ctx.message.server.id]['type'] == False:
             roles = set(ctx.message.author.roles)
             if self.settings[ctx.message.server.id]['role'] is not None:
