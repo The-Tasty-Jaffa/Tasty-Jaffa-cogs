@@ -20,11 +20,7 @@ class TempVoice:
         self.bot = bot
         self.check_empty = dataIO.load_json("data/Tasty/TempVoice/VoiceChannel.json")
         self.settings = dataIO.load_json("data/Tasty/TempVoice/settings.json")
-        #self.resent = {} #Resent people to have made a channel for rate limiting reasons (prevents spam)
-        #key = "NAME"
-        #value = epoch time
-        #If there is a better way - Tell me!
-
+        
         for x in self.bot.servers:
             try:
                 print("Testing Values for settings.json in /Tatsy/TempVoice")
@@ -41,11 +37,13 @@ class TempVoice:
     @commands.group(name="setvoice", pass_context=True)
     @checks.admin()
     async def VoiceSet(self, ctx):
-        """Changes the settings for this cog use with no sub command to get infomation on the cog, and current setings"""
+
+        """Changes the settings for this cog, use with no sub command to get infomation on the cog, and current setings"""
 
         if ctx.invoked_subcommand is None:
             info = ''.join('{}{}\n'.format(key, val) for key, val in self.settings[ctx.message.server.id].items())
             em = discord.Embed(title="Tempary voice channel settings", description="""voice [name]
+
 Creates a Voice channel named after the user who called it or by the optional parameter [name] - must have " around the entire name (some limitations such as length apply)
 
 channel <channel_id>
@@ -67,7 +65,7 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
                 rep = "Use of a Command (mode = 2)"
                 
             em.add_field(name="Type", value=rep, inline=False)
-
+            
             try:
                 em.add_field(name="channel",value = ctx.message.server.get_channel(self.settings[ctx.message.server.id]['channel']).name, inline=False)
             except:
@@ -77,6 +75,7 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
             
             del rep
             em.set_author(name=ctx.message.server.name, icon_url=ctx.message.server.icon_url)
+
             em.set_footer(text="This cog can be found here - https://github.com/The-Tasty-Jaffa/Tasty-Jaffa-cogs/")
                     
             await self.bot.send_message(ctx.message.channel, embed=em)
@@ -85,7 +84,9 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
     @VoiceSet.command(pass_context=True)
     @checks.admin_or_permissions(manage_channels=True)
     async def channel(self, ctx, channel_id:str):
+
         """Enter **Voice** channel id to set the channel to join to make a new sub channel """
+
         
         channel = self.bot.get_channel(channel_id)#basicly just to check if it's an actual channel
         if channel is None:
@@ -103,6 +104,7 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
     @checks.admin()
     async def role(self, ctx, NoI:str, role:str):#NoI standing for Name or Id
         """sets the required role to use the [p]voice command"""
+
     
         role = discord.utils.get(ctx.message.server.roles, name=role)
         
@@ -122,6 +124,7 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
                     try:
                         perms = discord.PermissionOverwrite(mute_members=True, deafen_members=True, manage_channels=True)#Sets permisions
                         perms = discord.ChannelPermissions(target=user, overwrite=perms)#Sets the channel permissions for the person who sent the message
+
                         channel = await self.bot.create_channel(self.bot.get_server(value[0]), user.name, perms, type=discord.ChannelType.voice)#creates a channel           
                         self.check_empty.append([channel.id, value[0]]) #Multidimentional list
                         dataIO.save_json("data/Tasty/VoiceChannel.json", self.check_empty)#saves the new file
@@ -138,6 +141,7 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
         
         if Voice == 2:
             self.settings[ctx.message.server.id]['type']=False
+
             await self.bot.send_message("Mode changed to use of a command `[p]voice` [Mode = 2]")
             
         elif Voice == 1:
@@ -149,10 +153,10 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
 
         dataIO.save_json("data/Tasty/TempVoice/settings.json", self.settings)                  
     
-    
     @commands.command(name="voice", pass_context=True)
     async def voice(self, ctx, name:str=''): #actual command
         """Creates a voice channel use opptional argument <name> to spesify the name of the channel, Use `" "` around the name of the channel"""
+        #This can be updated
         if self.settings[ctx.message.server.id]['type'] == False:
             roles = set(ctx.message.author.roles)
             if self.settings[ctx.message.server.id]['role'] is not None:
@@ -164,8 +168,9 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
                         try:
                             perms = discord.PermissionOverwrite(mute_members=True, deafen_members=True, manage_channels=True)#Sets permisions
                             perms = discord.ChannelPermissions(target=ctx.message.author, overwrite=perms)#Sets the channel permissions for the person who sent the message
-                            channel = await self.bot.create_channel(ctx.message.server, name, perms, type=discord.ChannelType.voice)#creates a channel        
-                            self.check_empty.append([channel.id, ctx.message.server.id]) #Multidimentional list or array
+                            channel = await self.bot.create_channel(ctx.message.server, name, perms, type=discord.ChannelType.voice)#creates a channel          
+
+                            self.check_empty.append([channel.id, ctx.message.server.id]) #Multidimentional list
                             dataIO.save_json("data/Tasty/VoiceChannel.json", self.check_empty)#saves the new file
                             
                         except Exception as e:

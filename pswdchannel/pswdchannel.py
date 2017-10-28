@@ -6,6 +6,7 @@ from __main__ import send_cmd_help
 import bcrypt
 
 #Created by The Tasty Jaffa
+#Code reviewed by samwho (and a few others in "Programming Discussions" discord server)
 #A lot of people have been asking for password channels in uservoice feed
 #So I made this
 
