@@ -119,7 +119,7 @@ class PswdChannels:
             dataIO.save_json("data/Tasty/pswdchannels/storage.json", self.storage)
 
         except discord.Forbidden:
-            await self.bot.send_message(ctx.message.channel, "Humm... I wasn't able to do that...")
+            await self.bot.send_message(ctx.message.channel, "Humm... I wasn't able to do that... Check my discord permissions.")
 
         except:
             await self.bot.send_message(ctx.message.channel,"Channel not found! Make sure to use the channel ID")
