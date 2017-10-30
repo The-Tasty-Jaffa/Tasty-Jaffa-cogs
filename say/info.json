@@ -1,9 +1,9 @@
 {
     "AUTHOR" : "The Tasty Jaffa",
-    "INSTALL_MSG" : "NOTE: This cog will allow (added)users to use the #say command for any server the bot is in! - To prevent this if a role ~say~ is used it will use that. speak- Repeats what was said by the cmd caller - Creates a file of the people allowed to use the command: also defualts to `say` role - Usage: [p]say <text>, [p]sayset add <@user>, [p]sayset remove <@user>, [p]sayset list",
+    "INSTALL_MSG" : "Allows for people to be asgined permission (roles or individual users) to use the command `[p]speak`, Use `[p]setsay` for info.",
     "NAME" : "say",
     "SHORT" : "Bot repeats what it is given",
-    "DESCRIPTION" : "This cog - say will make the bot repeat whatever it was given Usage: [p]speak <text> Usage-settings:[p]sayset",
+    "DESCRIPTION" : "This cog - say will make the bot repeat whatever it was given Usage: `[p]speak <text>` settings and more info: `[p]setsay`",
     "TAGS" : ["utility", "fun"],
     "HIDDEN" : false
 }
