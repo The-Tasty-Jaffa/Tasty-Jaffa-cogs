@@ -22,12 +22,10 @@ class say:
         print("Testing values in data/Tasty/say")
         for server in self.bot.servers:
             try:
-                self.settings[server.id]["MAX_MENTIONS"]
                 self.settings[server.id]["ROLE"]
                 self.settings[server.id]["USERS"]
             except:
                 self.settings[server.id] = {}
-                self.settings[server.id]["MAX_MENTIONS"]=3
                 self.settings[server.id]["ROLE"] = None
                 self.settings[server.id]["USERS"] = []
         
@@ -37,7 +35,8 @@ class say:
 
 add - Adds a user to have the abillity to use the speak command
 list - list users allowed and permited role
-remove - Removes a user to have the abillity to use the speak command"""
+remove - Removes a user to have the abillity to use the speak command
+role - Adds a permited role to use the speak command"""
         if ctx.invoked_subcommand is None:
             await self.bot.send_message(ctx.message.channel, "```Please use the speak command with: \n add - Adds a **user** to have the abillity to use the speak command \n remove - Removes a **user** to have the abillity to use the speak command \n role - Adds a role and those with it can use the speak command \n list - lists permited users and the permited role```")
 
@@ -60,6 +59,7 @@ remove - Removes a user to have the abillity to use the speak command"""
             await self.bot.send_message(ctx.message.channel, "Permited Role: **{}**".format(get_role(ctx, self.settings[ctx.message.server.id]["ROLE"]).name))
         else:
             await self.bot.send_message(ctx.message.channel, "No role is permitted")
+            
     @sayset.command(name="add", pass_context=True, no_pm=True)
     @checks.admin_or_permissions()
     async def say_add (self, ctx, user: discord.Member):
@@ -93,18 +93,11 @@ remove - Removes a user to have the abillity to use the speak command"""
         else:
             await self.bot.send_message(ctx.message.channel, "Role not found!")
 
-    @sayset.command(name="mentions", pass_context=True)
-    @checks.admin_or_permissions()
-    async def say_max_mentions(self, ctx, max_mentions:int):
-        self.settings[ctx.message.server.id]["MAX_MENTIONS"]=max_mentions
-        self.save()
-        await self.bot.send_message(ctx.message.channel, "Done!")
-
     @commands.command(name="speak", pass_context=True)
     async def bot_say(self, ctx, *, text):
         """The bot speaks what you tell it to"""
 
-        if '@everyone' in ctx.message.content and '@here' in ctx.message.content and len(ctx.message.mentions) > self.settings[ctx.message.server.id]["MAX_MENTIONS"]:
+        if '@everyone' in ctx.message.content and '@here' in ctx.message.content:
             await self.bot.send_message(ctx.message.channel, "Woh! {}, please don't do that".format(ctx.message.author.mention))
             return
     
@@ -126,7 +119,6 @@ remove - Removes a user to have the abillity to use the speak command"""
 
     async def server_join(self, server):
         self.settings[server.id]={
-            "MAX_MENTIONS":3,
             "ROLE":None,
             "USERS":[],
         }
