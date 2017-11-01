@@ -118,10 +118,10 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
     async def AutoTempVoice(self, before, user): #Is called when Someone joins the voice channel
         """Automaticly checks the voice channel for users and makes a channel for them"""
         
-        for value in list(self.settings.items()):
+        for value in set(self.settings.items()):
             if value[1]['type']==True:
-                if value[1]['channel']==user.voice_channel.id:
-                    try:
+                try:
+                    if value[1]['channel']==user.voice_channel.id:
                         perms = discord.PermissionOverwrite(mute_members=True, deafen_members=True, manage_channels=True)#Sets permisions
                         perms = discord.ChannelPermissions(target=user, overwrite=perms)#Sets the channel permissions for the person who sent the message
 
@@ -130,8 +130,8 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
                         dataIO.save_json("data/Tasty/VoiceChannel.json", self.check_empty)#saves the new file
                         await self.bot.move_member(user, channel)
                         
-                    except:
-                        pass
+                except:
+                    pass
             
                 
     @VoiceSet.command(name="type", pass_context=True)
