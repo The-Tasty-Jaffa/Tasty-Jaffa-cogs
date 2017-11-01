@@ -104,14 +104,16 @@ role - Adds a permited role to use the speak command"""
         #IF there are no mentions such as @everyone or @here must test useing a string
         
         if ctx.message.channel.permissions_for(ctx.message.server.me).manage_messages:
-            #checks if they are allowed (role or permitted)         
-            if ctx.message.author.id in self.settings[ctx.message.server.id]["USERS"] or get_role(ctx, self.settings[ctx.message.server.id]["ROLE"])  in ctx.message.author.roles:
-                await self.bot.delete_message(ctx.message)
-                await self.bot.send_message(ctx.message.channel, text)
-            else: 
-                await self.bot.say("You need to be given access to this command") 
-        else: 
             await self.bot.say("This command requires the **Manage Messages** permission.")
+            return
+        
+            #checks if they are allowed (role or permitted)         
+        if ctx.message.author.id in self.settings[ctx.message.server.id]["USERS"] or get_role(ctx, self.settings[ctx.message.server.id]["ROLE"])  in ctx.message.author.roles:
+            await self.bot.delete_message(ctx.message)
+            await self.bot.send_message(ctx.message.channel, text)
+        else: 
+            await self.bot.say("You need to be given access to this command") 
+        
 
 
     def save(self):
