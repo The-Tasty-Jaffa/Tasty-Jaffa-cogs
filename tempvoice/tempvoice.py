@@ -78,9 +78,9 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
                     
             await self.bot.send_message(ctx.message.channel, embed=em)
 
-    @VoiceSet.command(pass_context=True)
+    @VoiceSet.command(name="channel", pass_context=True)
     @checks.serverowner_or_permissions(manage_channels=True)
-    async def channel(self, ctx, channel_id:str):
+    async def voice_set_channel(self, ctx, channel_id:str):
         """Enter **Voice** channel id to set the channel to join to make a new sub channel """
         
         channel = self.bot.get_channel(channel_id)
