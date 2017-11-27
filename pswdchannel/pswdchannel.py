@@ -38,7 +38,7 @@ class PswdChannels:
             await self.bot.send_message(prv_channel, "Sorry but I cannot accept empty passwords")
             return
 
-        if auth==True: #Authenticates passwords
+        if auth is True: #Authenticates passwords
             if bcrypt.checkpw(password.content, self.storage[channel.id]):
                 
                 if isinstance(channel.type, type(discord.ChannelType.text)):
@@ -54,7 +54,7 @@ class PswdChannels:
             else:
                 await self.bot.send_message(prv_channel, "You did not enter a correct password")
                 
-        elif auth == False: #Sets passwords
+        elif auth is False: #Sets passwords
 
             if len(password.content) >= 64 or len(password.content) <= 5:
                 await self.bot.send_message(prv_channel, "The password is the wrong length, It must be longer than 5 charactors and shorter than 64")
