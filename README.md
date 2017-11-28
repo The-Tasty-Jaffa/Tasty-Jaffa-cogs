@@ -9,7 +9,8 @@ Say (say)
 
 Password protected channels (pswdchannels)
 
-Automatic RoleNo tification (thank you to Freud for testing this with me)
+Automatic Role Notification (rolenotifier) 
+(thank you to Freud for helping me briefly test this cog)
  
 ***
 
