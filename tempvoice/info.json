@@ -1,9 +1,9 @@
 {
     "AUTHOR" : "The Tasty Jaffa",
-    "INSTALL_MSG" : "TempVoice - Creates Tempary voice channels for people in public discord servers - Creates a file of the channels that have been made - Usage: [p]voice [name of channel]",
+    "INSTALL_MSG" : "TempVoice - Creates Tempary voice channels for people in public discord servers - More info: [p]setvoice - Usage: [p]voice [name of channel]",
     "NAME" : "TempVoice",
     "SHORT" : "Creates voice channels that will be deleted once empty",
-    "DESCRIPTION" : "This cog - TempVoice will create Voice channels that will later be deleted after a set interval - optional argument of the name of the channel - Usage: [p]voice [name of channel] ",
+    "DESCRIPTION" : "This cog - TempVoice will create Voice channels that will later be deleted after a set interval - Can have an optional argument of the name of the channel.",
     "TAGS" : ["utility", "voice"],
     "HIDDEN" : false
 }
