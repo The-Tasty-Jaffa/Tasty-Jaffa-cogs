@@ -43,6 +43,7 @@ role - Adds a permited role to use the speak command"""
     @sayset.command(name="list", pass_context=True)
     @checks.admin_or_permissions()
     async def say_list(self,ctx):
+        """Lists permited users and the permitted role"""
         names = []
         for user_id in self.settings[ctx.message.server.id]["USERS"]:
             names.append(discord.utils.get(self.bot.get_all_members(), id=user_id).name)
@@ -58,7 +59,7 @@ role - Adds a permited role to use the speak command"""
         if self.settings[ctx.message.server.id]["ROLE"] is not None:
             await self.bot.send_message(ctx.message.channel, "Permited Role: **{}**".format(get_role(ctx, self.settings[ctx.message.server.id]["ROLE"]).name))
         else:
-            await self.bot.send_message(ctx.message.channel, "No role is permitted")
+            await self.bot.send_message(ctx.message.channel, "No role has permission")
             
     @sayset.command(name="add", pass_context=True, no_pm=True)
     @checks.admin_or_permissions()
@@ -83,6 +84,7 @@ role - Adds a permited role to use the speak command"""
     @sayset.command(name="role", pass_context=True)
     @checks.admin_or_permissions()
     async def say_role(self, ctx, role_name:str):
+        """Sets the permitted role"""
         role = discord.utils.get(ctx.message.server.roles, name=role_name)
 
         if role is not None:
@@ -95,7 +97,7 @@ role - Adds a permited role to use the speak command"""
 
     @commands.command(name="speak", pass_context=True)
     async def bot_say(self, ctx, *, text):
-        """The bot speaks what you tell it to"""
+        """The bot repeats what you tell it to"""
 
         if '@everyone' in ctx.message.content and '@here' in ctx.message.content:
             await self.bot.send_message(ctx.message.channel, "Woh! {}, please don't do that".format(ctx.message.author.mention))
