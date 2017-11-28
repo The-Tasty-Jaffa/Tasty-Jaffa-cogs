@@ -105,7 +105,7 @@ role - Adds a permited role to use the speak command"""
     
         #IF there are no mentions such as @everyone or @here must test useing a string
         
-        if ctx.message.channel.permissions_for(ctx.message.server.me).manage_messages:
+        if ctx.message.channel.permissions_for(ctx.message.server.me).manage_messages is not True:
             await self.bot.say("This command requires the **Manage Messages** permission.")
             return
         
