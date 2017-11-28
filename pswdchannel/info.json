@@ -4,7 +4,7 @@
     "NAME" : "PswdChannels",
     "SHORT" : "Allows for channels to have passwords",
     "DESCRIPTION" : "This cog - pswdchannel adds the abilty for admins to add passwords to channels",
-    "TAGS" : ["utility", "admin", "channels", "management"],
+    "TAGS" : ["utility", "admin", "channels", "management", "passwords"],
     "REQUIREMENTS": ["bcrypt"],
     "HIDDEN" : false
 }

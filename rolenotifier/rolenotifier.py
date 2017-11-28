@@ -32,10 +32,10 @@ class RoleNotifier:
             except:
                 pass
     
-    @commands.command(pass_context=True, name="AutoRoleHelpTastyCogs")
+    @commands.command(pass_context=True, name="AutoroleInfo")
     @checks.admin_or_permissions(manage_roles=True)
     async def Notification_message_syntax_on_Tasty_Jaffa_cogs(self, ctx):
-        """Provides infomation on the syntax of what is sent and how to use it"""
+        """Infomation on how to use [p]setroles. ~ Provides infomation on the syntax of what is sent and how to use it"""
         em = Embed(tile="Infomation on how to use the notification system")
         em.add_field(name="Use of `{0}`", value = "The name of the role that was gained", inline=True)
         em.add_field(name="Use of `{1}`", value = "The name of the server that the role was gained in", inline=True)
@@ -48,7 +48,7 @@ class RoleNotifier:
     @commands.command(pass_context=True, name="setroles")
     @checks.admin_or_permissions(manage_roles=True)
     async def set_roles(self, ctx, role_name:str, msg:str="Well done {2}! In {1} you have just gained {0} role"):
-        """For documentation of this command check the gitpage, use speech marks for the [msg] paramater"""
+        """Sets the notification message for roles, use speech marks for the [msg] paramater"""
         await self.bot.send_message(ctx.message.channel, "This will dm a user with `{}` when then gain the `{}` role? \n\n __are you sure you want this? **y/n**__".format(msg, role_name))
         response = await self.bot.wait_for_message(channel = ctx.message.channel, author = ctx.message.author)
         if response.content.lower() == 'y':
