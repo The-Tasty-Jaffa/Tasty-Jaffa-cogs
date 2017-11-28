@@ -4,6 +4,6 @@
     "NAME" : "TempVoice",
     "SHORT" : "Creates voice channels that will be deleted once empty",
     "DESCRIPTION" : "This cog - TempVoice will create Voice channels that will later be deleted after a set interval - Can have an optional argument of the name of the channel.",
-    "TAGS" : ["utility", "voice", "Temporary channels", "Channels"],
+    "TAGS" : ["utility", "voice", "temporary channels", "channels"],
     "HIDDEN" : false
 }
