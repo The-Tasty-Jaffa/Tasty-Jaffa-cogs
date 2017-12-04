@@ -1,0 +1,9 @@
+
+{
+    "AUTHOR" : "The Tasty Jaffa",
+    "INSTALL_MSG" : "",
+    "NAME" : "openschedule",
+    "SHORT" : "Makes a schedule",
+    "DESCRIPTION" : "This cog - ",
+    "TAGS" : ["utility", "mangement"],
+    "HIDDEN" : true
