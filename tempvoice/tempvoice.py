@@ -236,7 +236,6 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
                     continue
                 
                 current = self.bot.get_channel(channel_id)
-                print(channel_id)
 
                 if current is None: # if channel doesn't exist
                     Channels_to_remove.append(channel_id)
