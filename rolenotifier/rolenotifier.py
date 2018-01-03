@@ -54,10 +54,10 @@ class RoleNotifier:
         if response.content.lower() == 'y':
             self.settings[ctx.message.server.id][role_name] = msg
             dataIO.save_json("data/Tasty/AutoRoleDM/settings.json", self.settings)
-            await self.bot.send_message(ctx.message.channel, "Saved! -- Make sure to have a look at the documention on the git repo page!")
+            await self.bot.send_message(ctx.message.channel, "Saved! -- Make sure to have a look at the documention using `[p]AutoroleInfo`")
 
         else:
-            await self.bot.send_message(ctx.message.channel, "Aborted! -- Make sure to have a look at the documention on the git repo page!")
+            await self.bot.send_message(ctx.message.channel, "Aborted! -- Make sure to have a look at the documention using `[p]AutoroleInfo`!")
 
     @commands.command(pass_context=True, name="listroles")
     @checks.admin_or_permissions(manage_roles=True)
@@ -81,11 +81,11 @@ class RoleNotifier:
             try:
                 del self.settings[ctx.message.server.id][role_name]
                 dataIO.save_json("data/Tasty/AutoRoleDM/settings.json", self.settings)
-                await self.bot.send_message(ctx.message.channel, "Saved! -- Make sure to have a look at the documention on the git repo page!")
+                await self.bot.send_message(ctx.message.channel, "Saved! -- Make sure to have a look at the documention using `[p]AutoroleInfo`!")
             except:
                 await self.bot.say("Woops! That role hasn't been set yet!")
         else:
-            await self.bot.send_message(ctx.message.channel, "Aborted! --  Make sure to have a look at the documention on the git repo page!")
+            await self.bot.send_message(ctx.message.channel, "Aborted! --  Make sure to have a look at the documention using `[p]AutoroleInfo`")
 
     async def server_join(self, server):
         self.settings[server.id]={
