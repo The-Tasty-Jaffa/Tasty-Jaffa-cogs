@@ -151,8 +151,11 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
         if server_role is not None:
             for role in set(ctx.message.author.roles):
                 if role.id == server_role:
-                    await self.bot.say("Sorry but you are not permited to use that command! A role is needed.")
-                    return # If role is found breaks loop - else statement isn't executed.
+                    break
+            else: # If role is not found
+                await self.bot.say("Sorry but you are not permited to use that command! A role is needed.")
+                return
+                    
         
         #If all the requirements are met
         try:
