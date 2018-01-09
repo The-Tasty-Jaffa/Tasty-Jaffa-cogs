@@ -214,8 +214,7 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
 
                 channel = await self.bot.create_channel(self.bot.get_server(value[0]), user.name, perms, type=discord.ChannelType.voice)#creates a channel           
                 
-                self.check_empty.append(channel.id) #Multidimentional list
-                dataIO.save_json("data/Tasty/TempVoice/VoiceChannel.json", self.check_empty)#saves the new file
+                self.check_empty.append(channel.id)
 
                 await asyncio.sleep(1)
                 await self.bot.move_member(user, channel)
@@ -223,7 +222,9 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
                     
             except discord.Forbidden:
                 await self.bot.send_message(user.server.owner, "I need the proper permissions! I was unable to create a new channel. (Move members, Manage channels)")
-
+            
+            dataIO.save_json("data/Tasty/TempVoice/VoiceChannel.json", self.check_empty)#saves the new file
+            
     async def Check(self): #Loops around until channel is empty
         DELAY = 60 #Delay in seconds
         
@@ -273,8 +274,6 @@ def check_files(): #Creates json files in the folder
         dataIO.save_json("data/Tasty/TempVoice/settings.json", {})
 
 def setup(bot):
-    logger = logging.getLogger('aiohttp.client')
-    logger.setLevel(50)  # Stops warning spam
 
     check_folders()
     check_files()
