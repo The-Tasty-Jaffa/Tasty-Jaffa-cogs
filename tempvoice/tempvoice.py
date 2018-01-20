@@ -245,6 +245,7 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
                 dataIO.save_json("data/Tasty/TempVoice/VoiceChannel.json", self.check_empty)#saves the new file
 
                 await asyncio.sleep(1)
+                await self.channel_to_category(user.voice_channel.id, channel.id) #puts channel into the right category                
                 await self.bot.move_member(user, channel)
                 await self.bot.move_channel(channel, position+1)
                     
