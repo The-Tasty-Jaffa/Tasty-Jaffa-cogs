@@ -34,7 +34,8 @@ class TempVoice:
                     }
 
         dataIO.save_json("data/Tasty/TempVoice/settings.json", self.settings)
-
+    
+    #Cog settings
     @commands.group(name="setvoice", pass_context=True)
     @checks.serverowner_or_permissions(manage_channels=True)
     async def VoiceSet(self, ctx):
@@ -135,6 +136,7 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
 
         dataIO.save_json("data/Tasty/TempVoice/settings.json", self.settings)                  
     
+    #Voice command
     @commands.command(pass_context=True)
     @commands.cooldown(1, 60, commands.BucketType.user)
     async def voice(self, ctx, *, name:str=''): #actual command
@@ -173,7 +175,32 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
             print("=================")
 
             await self.bot.send_message(ctx.message.channel, "An error occured - check logs")
+    
+    #Category implimentaion
+    async def channel_to_category(self, channel_in_category_id, channel_to_move_id):
+        category_id = await self.bot.http.request(
+            discord.http.Route(
+                'GET', '/channels/{}'.format(channel_in_category_id)
+            )
+        ) #Gets The "channel_in_category" Categories ID
 
+        category_id = category_id["parent_id"]
+
+        channel = await self.bot.http.request(
+            discord.http.Route(
+                'GET', '/channels/{}'.format(channel_to_move_id)
+            )
+        ) #gets the channel we want to move data (as json) -- Could be improved further
+
+        channel["parent_id"] = category_id #Updates with the category info that we want
+
+        await self.bot.http.request(
+            discord.http.Route(
+                'PATCH', '/channels/{}'.format(channel_to_move_id)
+            ), json = channel #uses PATCH method to update the channel
+        )
+    
+    #Lister defs
     async def server_join(self, server):
         self.settings[server.id]={
             'role':None,
