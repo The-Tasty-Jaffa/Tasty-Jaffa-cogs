@@ -45,16 +45,21 @@ class TempVoice:
             info = ''.join('{}{}\n'.format(key, val) for key, val in self.settings[ctx.message.server.id].items())
             em = discord.Embed(title="Tempary voice channel settings", description="""voice [name]
 Creates a Voice channel named after the user who called it or by the optional parameter [name]
+
 channel <channel_id>
 Selects a voice channel which users can join to create a tempary voice channel (Applys to mode = 1 only)
+
 category <category_id>
-which category channels should be created under (Applys to mode = 2 only)
+Sets the category channels should be created under (Applys to mode = 2 only)
+
 role <role_name>
 Sets the role which can use the command to make a temporary voice channel -- example - [p]setvoice role autovoice
+
 type <mode_number>
 Sets the mode type for the server
 Mode = 1, Use of a Channel. `[p]setvoice type 1`
 Mode = 2, Use of a command. `[p]setvoice type 2`
+
 Also make sure I have "move members" and "manage channels" permissions! """, colour=0xff0000)
             
             if self.settings[ctx.message.server.id]["type"] is True:
@@ -84,7 +89,15 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
     @VoiceSet.command(name="category", pass_context=True)
     @checks.serverowner_or_permissions(manage_channels=True)
     async def voice_set_category(self, ctx, category_id:str):
-        """Enter **Category** id - Sets the category that channels will be created under"""
+        """Enter **Category** id - Sets the category that channels will be created under (enter None to remove)"""
+        if not category_id.isdigit():
+
+            await self.bot.send_message(ctx.message.channel, "Category removed!")
+
+            self.settings[ctx.message.server.id]['category'] = None
+            dataIO.save_json("data/Tasty/TempVoice/settings.json", self.settings)
+            return
+
         category = self.bot.get_channel(category_id)
 
         #If it couldn't get the channel
@@ -108,13 +121,19 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
         """Enter **Voice** channel id to set the channel to join to make a new sub channel """
         
         channel = self.bot.get_channel(channel_id)
+
+        #Does this channel exist?
         if channel is None:
             channel = discord.utils.get(ctx.message.server.channels, name=channel_id, type=discord.ChannelType.voice)
             #Makes sure it can find the channel
             if channel is None:
-                await self.bot.send_message(ctx.message.channel, "That channel was not found")
+                await self.bot.send_message(ctx.message.channel, "That channel was not found.")
                 return
-            
+
+        if channel.type is not discord.ChannelType.voice: #Check if voice channel
+            await self.bot.send_message(ctx.message.channel, "That is not a voice channel.")
+            return
+
         await self.bot.send_message(ctx.message.channel, "Channel set!")    
         self.settings[ctx.message.server.id]['channel']=channel.id
         dataIO.save_json("data/Tasty/TempVoice/settings.json", self.settings)
