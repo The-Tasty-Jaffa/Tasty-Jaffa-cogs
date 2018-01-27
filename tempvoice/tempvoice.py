@@ -34,7 +34,8 @@ class TempVoice:
                     }
 
         dataIO.save_json("data/Tasty/TempVoice/settings.json", self.settings)
-
+    
+    #Cog settings
     @commands.group(name="setvoice", pass_context=True)
     @checks.serverowner_or_permissions(manage_channels=True)
     async def VoiceSet(self, ctx):
@@ -43,11 +44,13 @@ class TempVoice:
         if ctx.invoked_subcommand is None:
             info = ''.join('{}{}\n'.format(key, val) for key, val in self.settings[ctx.message.server.id].items())
             em = discord.Embed(title="Tempary voice channel settings", description="""voice [name]
-
 Creates a Voice channel named after the user who called it or by the optional parameter [name]
 
 channel <channel_id>
-Selects a voice channel which users can join to create a tempary voice channel
+Selects a voice channel which users can join to create a tempary voice channel (Applys to mode = 1 only)
+
+category <category_id>
+Sets the category channels should be created under (Applys to mode = 2 only)
 
 role <role_name>
 Sets the role which can use the command to make a temporary voice channel -- example - [p]setvoice role autovoice
@@ -71,6 +74,11 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
             except:
                 em.add_field(name="channel",value = "None", inline=False)
             
+            try:
+                em.add_field(name="category",value = ctx.message.server.get_channel(self.settings[ctx.message.server.id]['category']).name, inline=False)
+            except:
+                em.add_field(name="category",value = "None", inline=False)
+
             em.add_field(name="Role", value = get_role(ctx, self.settings[ctx.message.server.id]['role']), inline=False)
             
             em.set_author(name=ctx.message.server.name, icon_url=ctx.message.server.icon_url)
@@ -78,19 +86,54 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
                     
             await self.bot.send_message(ctx.message.channel, embed=em)
 
+    @VoiceSet.command(name="category", pass_context=True)
+    @checks.serverowner_or_permissions(manage_channels=True)
+    async def voice_set_category(self, ctx, category_id:str):
+        """Enter **Category** id - Sets the category that channels will be created under (enter None to remove)"""
+        if not category_id.isdigit():
+
+            await self.bot.send_message(ctx.message.channel, "Category removed!")
+
+            self.settings[ctx.message.server.id]['category'] = None
+            dataIO.save_json("data/Tasty/TempVoice/settings.json", self.settings)
+            return
+
+        category = self.bot.get_channel(category_id)
+
+        #If it couldn't get the channel
+        if category is None:
+            await self.bot.send_message(ctx.message.channel, "Woops! That its not a valid ID (or there was an issue with finding the channel)! Please make sure that you use the command with the id of a category.")
+            return
+
+        #Check that this is a category
+        if category.type != 4:
+            await self.bot.send_message(ctx.message.channel, "Woops! That its not a category! Please make sure that you use the command with the id of a category.")
+            return
+        
+        await self.bot.send_message(ctx.message.channel, "Category set as {0}! New channels will be created here if a command is used".format(category.name))
+
+        self.settings[ctx.message.server.id]['category'] = category_id
+        dataIO.save_json("data/Tasty/TempVoice/settings.json", self.settings)
+
     @VoiceSet.command(name="channel", pass_context=True)
     @checks.serverowner_or_permissions(manage_channels=True)
     async def voice_set_channel(self, ctx, channel_id:str):
         """Enter **Voice** channel id to set the channel to join to make a new sub channel """
         
         channel = self.bot.get_channel(channel_id)
+
+        #Does this channel exist?
         if channel is None:
             channel = discord.utils.get(ctx.message.server.channels, name=channel_id, type=discord.ChannelType.voice)
             #Makes sure it can find the channel
             if channel is None:
-                await self.bot.send_message(ctx.message.channel, "That channel was not found")
+                await self.bot.send_message(ctx.message.channel, "That channel was not found.")
                 return
-            
+
+        if channel.type is not discord.ChannelType.voice: #Check if voice channel
+            await self.bot.send_message(ctx.message.channel, "That is not a voice channel.")
+            return
+
         await self.bot.send_message(ctx.message.channel, "Channel set!")    
         self.settings[ctx.message.server.id]['channel']=channel.id
         dataIO.save_json("data/Tasty/TempVoice/settings.json", self.settings)
@@ -135,6 +178,7 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
 
         dataIO.save_json("data/Tasty/TempVoice/settings.json", self.settings)                  
     
+    #Voice command
     @commands.command(pass_context=True)
     @commands.cooldown(1, 60, commands.BucketType.user)
     async def voice(self, ctx, *, name:str=''): #actual command
@@ -151,18 +195,19 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
         if server_role is not None:
             for role in set(ctx.message.author.roles):
                 if role.id == server_role:
-                    break
-            else: # If role is not found
-                await self.bot.say("Sorry but you are not permited to use that command! A role is needed.")
-                return
+                    break # If role is found
                     
+            else: #If we didn't break out of the loop then the user does not have the right role      
+                await self.bot.say("Sorry but you are not permited to use that command! A role is needed.")
+                return # If role is found breaks loop - else statement isn't executed.
+
         
         #If all the requirements are met
         try:
             perms = discord.PermissionOverwrite(mute_members=True, deafen_members=True, manage_channels=True)#Sets permisions
             perms = discord.ChannelPermissions(target=ctx.message.author, overwrite=perms)#Sets the channel permissions for the person who sent the message
             channel = await self.bot.create_channel(ctx.message.server, name, perms, type=discord.ChannelType.voice)#creates a channel          
-
+            await self.move_channel_to_category(channel.id, self.settings[channel.server.id]['category'])
             self.check_empty.append(channel.id) #Multidimentional list
             dataIO.save_json("data/Tasty/TempVoice/VoiceChannel.json", self.check_empty)#saves the new file
             return
@@ -176,7 +221,34 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
             print("=================")
 
             await self.bot.send_message(ctx.message.channel, "An error occured - check logs")
+    
+    #Category implimentaion
+    async def channel_to_category(self, channel_in_category_id, channel_to_move_id):
+        channel_in_category = await self.bot.http.request(
+            discord.http.Route(
+                'GET', '/channels/{}'.format(channel_in_category_id)
+            )
+        ) #Gets The "channel_in_category" Categories ID
 
+        await self.move_channel_to_category(channel_to_move_id, channel_in_category["parent_id"])
+
+    async def move_channel_to_category(self, channel_to_move_id, category_id):
+
+        channel = await self.bot.http.request(
+            discord.http.Route(
+                'GET', '/channels/{}'.format(channel_to_move_id)
+            )
+        ) #gets the channel we want to move data (as json) -- Could be improved further
+
+        channel["parent_id"] = category_id #Updates with the category info that we want
+
+        await self.bot.http.request(
+            discord.http.Route(
+                'PATCH', '/channels/{}'.format(channel_to_move_id)
+            ), json = channel #uses PATCH method to update the channel
+        )
+    
+    #Lister defs
     async def server_join(self, server):
         self.settings[server.id]={
             'role':None,
@@ -202,36 +274,34 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
 
         if user.voice_channel is None: # Are they in a channel right now?
             return
+        
+        if self.settings[user.voice_channel.server.id]['type']!=True:
+            return
 
-        for value in self.settings.items(): # Are they in a channel that we care about? (it's a dict)
-            if value[1]['type']!=True:
-                continue
-
-            try:
-                if value[1]['channel']!=user.voice_channel.id:
-                    continue
-                
-                position = user.voice_channel.position
-                perms = discord.PermissionOverwrite(mute_members=True, deafen_members=True, manage_channels=True)#Sets permisions
-                perms = discord.ChannelPermissions(target=user, overwrite=perms)#Sets the channel permissions for the person who sent the message
-
-                channel = await self.bot.create_channel(self.bot.get_server(value[0]), user.name, perms, type=discord.ChannelType.voice)#creates a channel           
-                
-                self.check_empty.append(channel.id)
-
-                await asyncio.sleep(1)
-                await self.bot.move_member(user, channel)
-                await self.bot.move_channel(channel, position+1)
-                    
-            except discord.Forbidden:
-                await self.bot.send_message(user.server.owner, "I need the proper permissions! I was unable to create a new channel. (Move members, Manage channels)")
+        try:
+            if self.settings[user.voice_channel.server.id]['channel']!=user.voice_channel.id:
+                return
             
+            position = user.voice_channel.position
+            perms = discord.PermissionOverwrite(mute_members=True, deafen_members=True, manage_channels=True)#Sets permisions
+            perms = discord.ChannelPermissions(target=user, overwrite=perms)#Sets the channel permissions for the person who sent the message
+
+            channel = await self.bot.create_channel(user.voice_channel.server, user.name, perms, type=discord.ChannelType.voice)#creates a channel           
+            
+            self.check_empty.append(channel.id) #Multidimentional list
             dataIO.save_json("data/Tasty/TempVoice/VoiceChannel.json", self.check_empty)#saves the new file
+
+            await self.channel_to_category(user.voice_channel.id, channel.id) #puts channel into the right category                
+            await self.bot.move_member(user, channel)
+            await self.bot.move_channel(channel, position+1)
             
-    async def Check(self): #Loops around until channel is empty
+        except discord.Forbidden:
+            await self.bot.send_message(user.server.owner, "I need the proper permissions! I was unable to create a new channel. (Move members, Manage channels)")
+
+    async def voice_check(self): #Loops around until channel is empty
         DELAY = 60 #Delay in seconds
         
-        while self == self.bot.get_cog("TempVoice"): #While bot is online
+        while self == self.bot.get_cog("TempVoice"): #While bot is online/cog is loaded
 
             Channels_to_remove = [] # To not looping over a list that you are modifiying
             for channel_id in self.check_empty:
@@ -262,6 +332,9 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
             dataIO.save_json("data/Tasty/TempVoice/VoiceChannel.json",self.check_empty)# saves new list
             await asyncio.sleep(DELAY)
 
+        await self.bot.send_message(discord.Appinfo.owner, "Channels will no longer be deleted! An issue has ocurred. some INFO: `self.check_empty: {0} | self.bot.get_cog: {1}`".format(self.check_empty, self.bot.get_cog("TempVoice")))
+        #Some instances have issues here (not sure why still)
+
 def check_folders(): #Creates a folder
     if not os.path.exists("data/Tasty/TempVoice"):
         print("Creating data/Tasty/TempVoice folder...")
@@ -277,14 +350,13 @@ def check_files(): #Creates json files in the folder
         dataIO.save_json("data/Tasty/TempVoice/settings.json", {})
 
 def setup(bot):
-
     check_folders()
     check_files()
 
     n = TempVoice(bot)
 
     loop = asyncio.get_event_loop()
-    loop.create_task(n.Check())
+    loop.create_task(n.voice_check())
 
     bot.add_listener(n.AutoTempVoice, 'on_voice_state_update') #Thankyou to Tobotimus for giving a simple example on listeners
     bot.add_listener(n.server_join, "on_server_join")
