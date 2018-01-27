@@ -272,36 +272,34 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
 
         if user.voice_channel is None: # Are they in a channel right now?
             return
+        
+        if self.settings[user.voice_channel.server.id]['type']!=True:
+            return
 
-        for value in self.settings.items(): # Are they in a channel that we care about? (it's a dict)
-            if value[1]['type']!=True:
-                continue
+        try:
+            if self.settings[user.voice_channel.server.id]['channel']!=user.voice_channel.id:
+                return
+            
+            position = user.voice_channel.position
+            perms = discord.PermissionOverwrite(mute_members=True, deafen_members=True, manage_channels=True)#Sets permisions
+            perms = discord.ChannelPermissions(target=user, overwrite=perms)#Sets the channel permissions for the person who sent the message
 
-            try:
-                if value[1]['channel']!=user.voice_channel.id:
-                    continue
+            channel = await self.bot.create_channel(user.voice_channel.server, user.name, perms, type=discord.ChannelType.voice)#creates a channel           
+            
+            self.check_empty.append(channel.id) #Multidimentional list
+            dataIO.save_json("data/Tasty/TempVoice/VoiceChannel.json", self.check_empty)#saves the new file
+
+            await self.channel_to_category(user.voice_channel.id, channel.id) #puts channel into the right category                
+            await self.bot.move_member(user, channel)
+            await self.bot.move_channel(channel, position+1)
                 
-                position = user.voice_channel.position
-                perms = discord.PermissionOverwrite(mute_members=True, deafen_members=True, manage_channels=True)#Sets permisions
-                perms = discord.ChannelPermissions(target=user, overwrite=perms)#Sets the channel permissions for the person who sent the message
+        except discord.Forbidden:
+            await self.bot.send_message(user.server.owner, "I need the proper permissions! I was unable to create a new channel. (Move members, Manage channels)")
 
-                channel = await self.bot.create_channel(self.bot.get_server(value[0]), user.name, perms, type=discord.ChannelType.voice)#creates a channel           
-                
-                self.check_empty.append(channel.id) #Multidimentional list
-                dataIO.save_json("data/Tasty/TempVoice/VoiceChannel.json", self.check_empty)#saves the new file
-
-                await asyncio.sleep(1)
-                await self.channel_to_category(user.voice_channel.id, channel.id) #puts channel into the right category                
-                await self.bot.move_member(user, channel)
-                await self.bot.move_channel(channel, position+1)
-                    
-            except discord.Forbidden:
-                await self.bot.send_message(user.server.owner, "I need the proper permissions! I was unable to create a new channel. (Move members, Manage channels)")
-
-    async def Check(self): #Loops around until channel is empty
+    async def voice_check(self): #Loops around until channel is empty
         DELAY = 60 #Delay in seconds
         
-        while self == self.bot.get_cog("TempVoice"): #While bot is online
+        while self == self.bot.get_cog("TempVoice"): #While bot is online/cog is loaded
 
             Channels_to_remove = [] # To not looping over a list that you are modifiying
             for channel_id in self.check_empty:
@@ -310,7 +308,6 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
                     continue
                 
                 current = self.bot.get_channel(channel_id)
-                print(channel_id)
 
                 if current is None: # if channel doesn't exist
                     Channels_to_remove.append(channel_id)
@@ -333,6 +330,9 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
             dataIO.save_json("data/Tasty/TempVoice/VoiceChannel.json",self.check_empty)# saves new list
             await asyncio.sleep(DELAY)
 
+        await self.bot.send_message(discord.Appinfo.owner, "Channels will no longer be deleted! An issue has ocurred. some INFO: `self.check_empty: {0} | self.bot.get_cog: {1}`".format(self.check_empty, self.bot.get_cog("TempVoice")))
+        #Some instances have issues here (not sure why still)
+
 def check_folders(): #Creates a folder
     if not os.path.exists("data/Tasty/TempVoice"):
         print("Creating data/Tasty/TempVoice folder...")
@@ -349,7 +349,7 @@ def check_files(): #Creates json files in the folder
 
 def setup(bot):
     logger = logging.getLogger('aiohttp.client')
-    logger.setLevel(50)  # Stops warning spam
+    logger.setLevel(40)  # Stops warning spam
 
     check_folders()
     check_files()
@@ -357,7 +357,7 @@ def setup(bot):
     n = TempVoice(bot)
 
     loop = asyncio.get_event_loop()
-    loop.create_task(n.Check())
+    loop.create_task(n.voice_check())
 
     bot.add_listener(n.AutoTempVoice, 'on_voice_state_update') #Thankyou to Tobotimus for giving a simple example on listeners
     bot.add_listener(n.server_join, "on_server_join")
