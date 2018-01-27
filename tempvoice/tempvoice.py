@@ -196,9 +196,11 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
             for role in set(ctx.message.author.roles):
                 if role.id == server_role:
                     break # If role is found
+                    
             else: #If we didn't break out of the loop then the user does not have the right role      
                 await self.bot.say("Sorry but you are not permited to use that command! A role is needed.")
                 return # If role is found breaks loop - else statement isn't executed.
+
         
         #If all the requirements are met
         try:
@@ -292,7 +294,7 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
             await self.channel_to_category(user.voice_channel.id, channel.id) #puts channel into the right category                
             await self.bot.move_member(user, channel)
             await self.bot.move_channel(channel, position+1)
-                
+            
         except discord.Forbidden:
             await self.bot.send_message(user.server.owner, "I need the proper permissions! I was unable to create a new channel. (Move members, Manage channels)")
 
@@ -348,9 +350,6 @@ def check_files(): #Creates json files in the folder
         dataIO.save_json("data/Tasty/TempVoice/settings.json", {})
 
 def setup(bot):
-    logger = logging.getLogger('aiohttp.client')
-    logger.setLevel(40)  # Stops warning spam
-
     check_folders()
     check_files()
 

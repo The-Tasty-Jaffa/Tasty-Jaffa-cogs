@@ -38,7 +38,7 @@ class PswdChannels:
             await self.bot.send_message(prv_channel, "Sorry but I cannot accept empty passwords")
             return
 
-        if auth==True: #Authenticates passwords
+        if auth is True: #Authenticates passwords
             if bcrypt.checkpw(password.content, self.storage[channel.id]):
                 
                 if isinstance(channel.type, type(discord.ChannelType.text)):
@@ -54,13 +54,13 @@ class PswdChannels:
             else:
                 await self.bot.send_message(prv_channel, "You did not enter a correct password")
                 
-        elif auth == False: #Sets passwords
+        elif auth is False: #Sets passwords
 
             if len(password.content) >= 64 or len(password.content) <= 5:
                 await self.bot.send_message(prv_channel, "The password is the wrong length, It must be longer than 5 charactors and shorter than 64")
                 return
 
-            try:
+            try: # No need for this - Check permissions instead and return if false.
                 defualt_role = ctx.message.server.default_role
 
                 if isinstance(channel.type, type(discord.ChannelType.text)):
@@ -82,12 +82,9 @@ class PswdChannels:
                 dataIO.save_json("data/Tasty/pswdchannels/storage.json", self.storage)
                 await self.bot.send_message(prv_channel, "Password set!")
                     
-            except:
-                await self.bot.send_message(prv_channel, "An error occured... Make sure I have the right permissions! (permissions required: Manage channels, Manage roles")
-
-
-        
-    
+            except discord.Forbidden:
+                #Since passwords can only be set by admins, asking for permissions should be fine
+                await self.bot.send_message(prv_channel, "Make sure I have the right permissions! (permissions required: Manage channels, Manage roles")
 
     @commands.command(pass_context=True, name="setpassword")
     @checks.admin_or_permissions(manage_channels=True)
@@ -96,7 +93,7 @@ class PswdChannels:
         channel = self.bot.get_channel(channel_id)
         
         if channel is not None:
-            await self.Pswd(ctx,channel,auth=False)
+            await self.Pswd(ctx, channel, auth=False)
 
         else:
             await self.bot.send_message(ctx.message.channel, "Channel not found! Make sure to use the channel ID")
@@ -105,7 +102,7 @@ class PswdChannels:
     @checks.admin_or_permissions(manage_channels=True)
     async def remove_password(self, ctx, channel_id):
         """Allows you to remove a password from that channel"""
-        try:
+        try: # If channel is none: return; again check for permissions
             channel = self.bot.get_channel(channel_id)
 
             if isinstance(channel.type, type(discord.ChannelType.text)):
