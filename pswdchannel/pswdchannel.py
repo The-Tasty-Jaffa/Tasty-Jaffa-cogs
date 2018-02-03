@@ -77,8 +77,8 @@ class PswdChannels:
                     perms = discord.PermissionOverwrite(connect=False)
                     await self.bot.edit_channel_permissions(channel, defualt_role, perms)
 
-                self.storage[channel.id] = bcrypt.hashpw(password.content, bcrypt.gensalt())
-            
+                self.storage[channel.id] = bcrypt.hashpw(password.content.encode("utf-8"), bcrypt.gensalt())
+                
                 dataIO.save_json("data/Tasty/pswdchannels/storage.json", self.storage)
                 await self.bot.send_message(prv_channel, "Password set!")
                     
