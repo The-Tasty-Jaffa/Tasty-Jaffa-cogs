@@ -39,7 +39,7 @@ class PswdChannels:
             return
 
         if auth is True: #Authenticates passwords
-            if bcrypt.checkpw(password.content, self.storage[channel.id]):
+            if bcrypt.checkpw(password.content.encode('utf-8'), self.storage[channel.id]):
                 
                 if isinstance(channel.type, type(discord.ChannelType.text)):
                     perms = discord.PermissionOverwrite(read_messages=True)
