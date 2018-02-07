@@ -116,6 +116,7 @@ class PswdChannels:
                 await self.bot.edit_channel_permissions(channel, ctx.message.server.default_role, perms)
 
             db.users.remove({"CHANNEL":channel_id})
+            await self.bot.send_message(ctx.message.channel, "Password removed!")
 
         except discord.Forbidden:
             await self.bot.send_message(ctx.message.channel, "Humm... I wasn't able to do that... Check my discord permissions.")
