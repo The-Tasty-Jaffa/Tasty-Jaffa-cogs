@@ -3,7 +3,17 @@ from discord.ext import commands
 from .utils.dataIO import dataIO
 from .utils import checks
 from __main__ import send_cmd_help
-import bcrypt
+try:
+    import bcrypt, pymongo
+    from pymongo import MongoClient
+except Exception as e:
+    raise RuntimeError("Make sure to have the right modules installed... Try `pip3 install pymongo` and `pip3 install py-bcrypt`")
+
+try:
+    client =  MongoClient()
+    db = client["red-discordbot-managedchannels"]
+except:
+    raise RuntimeError("Could not load Database - Check the GIT docs for more info.")
 
 #Created by The Tasty Jaffa
 #Code reviewed by samwho (and a few others in "Programming Discussions" discord server)
@@ -16,16 +26,6 @@ import bcrypt
 class PswdChannels:
     def __init__(self, bot):
         self.bot = bot
-    
-        if not os.path.exists("data/Tasty/pswdchannels"):
-            print("Creating data/Tasty/pswdchannels folder...")
-            os.makedirs("data/Tasty/pswdchannels")
-
-        if not dataIO.is_valid_json("data/Tasty/pswdchannels/storage.json"):
-            print("Creating empty storage.json...")
-            dataIO.save_json("data/Tasty/pswdchannels/storage.json", {})
-
-        self.storage = dataIO.load_json("data/Tasty/pswdchannels/storage.json")
         
     async def Pswd(self, ctx, channel, auth): # This deals with the passwords
         
@@ -38,8 +38,8 @@ class PswdChannels:
             await self.bot.send_message(prv_channel, "Sorry but I cannot accept empty passwords")
             return
 
-        if auth is True: #Authenticates passwords
-            if bcrypt.check_password_hash(password.content.encode('utf-8'), self.storage[channel.id].encode('utf-8')):
+        if auth==True: #Authenticates passwords
+            if bcrypt.checkpw(password.content, db.users.find_one({'CHANNEL':channel.id})["PSWD"]):
                 
                 if isinstance(channel.type, type(discord.ChannelType.text)):
                     perms = discord.PermissionOverwrite(read_messages=True)
@@ -54,13 +54,13 @@ class PswdChannels:
             else:
                 await self.bot.send_message(prv_channel, "You did not enter a correct password")
                 
-        elif auth is False: #Sets passwords
+        elif auth == False: #Sets passwords
 
             if len(password.content) >= 64 or len(password.content) <= 5:
                 await self.bot.send_message(prv_channel, "The password is the wrong length, It must be longer than 5 charactors and shorter than 64")
                 return
 
-            try: # No need for this - Check permissions instead and return if false.
+            try:
                 defualt_role = ctx.message.server.default_role
 
                 if isinstance(channel.type, type(discord.ChannelType.text)):
@@ -77,15 +77,13 @@ class PswdChannels:
                     perms = discord.PermissionOverwrite(connect=False)
                     await self.bot.edit_channel_permissions(channel, defualt_role, perms)
 
-                self.storage[channel.id] = str(bcrypt.hashpw(password.content.encode("utf-8"), bcrypt.gensalt()))
-                
-                dataIO.save_json("data/Tasty/pswdchannels/storage.json", self.storage)
+                db.users.insert_one({'CHANNEL':channel.id, "PSWD":bcrypt.hashpw(password.content, bcrypt.gensalt())})
                 await self.bot.send_message(prv_channel, "Password set!")
                     
-            except discord.Forbidden:
-                #Since passwords can only be set by admins, asking for permissions should be fine
-                await self.bot.send_message(prv_channel, "Make sure I have the right permissions! (permissions required: Manage channels, Manage roles")
-
+            except Exception as e:
+                print(e)
+                await self.bot.send_message(prv_channel, "An error occured... Make sure I have the right permissions! (permissions required: Manage channels, Manage roles")
+    
     @commands.command(pass_context=True, name="setpassword")
     @checks.admin_or_permissions(manage_channels=True)
     async def set_password(self, ctx, channel_id):
@@ -93,7 +91,7 @@ class PswdChannels:
         channel = self.bot.get_channel(channel_id)
         
         if channel is not None:
-            await self.Pswd(ctx, channel, auth=False)
+            await self.Pswd(ctx,channel,auth=False)
 
         else:
             await self.bot.send_message(ctx.message.channel, "Channel not found! Make sure to use the channel ID")
@@ -102,7 +100,7 @@ class PswdChannels:
     @checks.admin_or_permissions(manage_channels=True)
     async def remove_password(self, ctx, channel_id):
         """Allows you to remove a password from that channel"""
-        try: # If channel is none: return; again check for permissions
+        try:
             channel = self.bot.get_channel(channel_id)
 
             if isinstance(channel.type, type(discord.ChannelType.text)):
@@ -113,8 +111,7 @@ class PswdChannels:
                 perms = discord.PermissionOverwrite(connect=True)
                 await self.bot.edit_channel_permissions(channel, ctx.message.server.default_role, perms)
 
-            del self.storage[channel.id]
-            dataIO.save_json("data/Tasty/pswdchannels/storage.json", self.storage)
+            db.users.remove({"CHANNEL":channel_id})
 
         except discord.Forbidden:
             await self.bot.send_message(ctx.message.channel, "Humm... I wasn't able to do that... Check my discord permissions.")
@@ -132,8 +129,7 @@ class PswdChannels:
             await self.Pswd(ctx,channel,auth=True)
 
         else:
-            await self.bot.send_message(ctx.message.channel, "Channel not found! Make sure to use the channel ID")
-          
+            await self.bot.send_message(ctx.message.channel, "Channel not found! Make sure to use the channel ID")   
             
 def setup(bot):
     print("\nWARNING you are using the CPU intensive cog --> pswdchannel\n")
