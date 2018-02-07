@@ -39,20 +39,25 @@ class PswdChannels:
             return
 
         if auth==True: #Authenticates passwords
-            if bcrypt.checkpw(password.content, db.users.find_one({'CHANNEL':channel.id})["PSWD"]):
-                
-                if isinstance(channel.type, type(discord.ChannelType.text)):
-                    perms = discord.PermissionOverwrite(read_messages=True)
-                    await self.bot.edit_channel_permissions(channel, ctx.message.author, perms)
+            try:
+                if bcrypt.checkpw(password.content, db.users.find_one({'CHANNEL':channel.id})["PSWD"]): # Checks entered password against stored password
+                    # Causes Type error if no password is set for that channel
 
-                elif isinstance(channel.type, type(discord.ChannelType.voice)):
-                    perms = discord.PermissionOverwrite(connect=True)
-                    await self.bot.edit_channel_permissions(channel, ctx.message.author, perms)
-                
-                await self.bot.send_message(prv_channel, "Correct password entered")
+                    if isinstance(channel.type, type(discord.ChannelType.text)):
+                        perms = discord.PermissionOverwrite(read_messages=True)
+                        await self.bot.edit_channel_permissions(channel, ctx.message.author, perms)
+
+                    elif isinstance(channel.type, type(discord.ChannelType.voice)):
+                        perms = discord.PermissionOverwrite(connect=True)
+                        await self.bot.edit_channel_permissions(channel, ctx.message.author, perms)
+
+                    await self.bot.send_message(prv_channel, "Correct password entered")
+
+                else:
+                    await self.bot.send_message(prv_channel, "You did not enter a correct password")
                     
-            else:
-                await self.bot.send_message(prv_channel, "You did not enter a correct password")
+            except TypeError:
+                await self.bot.send_message(prv_channel,"That channel does not have a password set!")
                 
         elif auth == False: #Sets passwords
 
@@ -80,8 +85,7 @@ class PswdChannels:
                 db.users.insert_one({'CHANNEL':channel.id, "PSWD":bcrypt.hashpw(password.content, bcrypt.gensalt())})
                 await self.bot.send_message(prv_channel, "Password set!")
                     
-            except Exception as e:
-                print(e)
+            except:
                 await self.bot.send_message(prv_channel, "An error occured... Make sure I have the right permissions! (permissions required: Manage channels, Manage roles")
     
     @commands.command(pass_context=True, name="setpassword")
