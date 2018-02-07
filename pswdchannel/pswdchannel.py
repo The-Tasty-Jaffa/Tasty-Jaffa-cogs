@@ -40,7 +40,7 @@ class PswdChannels:
 
         if auth==True: #Authenticates passwords
             try:
-                if bcrypt.checkpw(password.content, db.users.find_one({'CHANNEL':channel.id})["PSWD"]): # Checks entered password against stored password
+                if bcrypt.checkpw(password.content.encode('utf-8'), db.users.find_one({'CHANNEL':channel.id})["PSWD"]): # Checks entered password against stored password
                     # Causes Type error if no password is set for that channel
 
                     if isinstance(channel.type, type(discord.ChannelType.text)):
@@ -82,7 +82,7 @@ class PswdChannels:
                     perms = discord.PermissionOverwrite(connect=False)
                     await self.bot.edit_channel_permissions(channel, defualt_role, perms)
 
-                db.users.insert_one({'CHANNEL':channel.id, "PSWD":bcrypt.hashpw(password.content, bcrypt.gensalt())})
+                db.users.insert_one({'CHANNEL':channel.id, "PSWD":bcrypt.hashpw(password.content.encode('utf-8'), bcrypt.gensalt())})
                 await self.bot.send_message(prv_channel, "Password set!")
                     
             except discord.Forbidden:
