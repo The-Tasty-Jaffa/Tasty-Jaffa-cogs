@@ -85,7 +85,7 @@ class PswdChannels:
                 db.users.insert_one({'CHANNEL':channel.id, "PSWD":bcrypt.hashpw(password.content, bcrypt.gensalt())})
                 await self.bot.send_message(prv_channel, "Password set!")
                     
-            except:
+            except discord.Forbidden:
                 await self.bot.send_message(prv_channel, "An error occured... Make sure I have the right permissions! (permissions required: Manage channels, Manage roles")
     
     @commands.command(pass_context=True, name="setpassword")
