@@ -40,7 +40,7 @@ class PswdChannels:
 
         if auth==True: #Authenticates passwords
             try:
-                if bcrypt.checkpw(password.content.encode('utf-8'), db.users.find_one({'CHANNEL':channel.id})["PSWD"]): # Checks entered password against stored password
+                if bcrypt.checkpw(password.content.encode('utf-8'), db.users.find_one({'CHANNEL':channel.id})['PSWD']): # Checks entered password against stored password
                     # Causes Type error if no password is set for that channel
 
                     if isinstance(channel.type, type(discord.ChannelType.text)):
@@ -82,7 +82,7 @@ class PswdChannels:
                     perms = discord.PermissionOverwrite(connect=False)
                     await self.bot.edit_channel_permissions(channel, defualt_role, perms)
 
-                db.users.insert_one({'CHANNEL':channel.id, "PSWD":bcrypt.hashpw(password.content.encode('utf-8'), bcrypt.gensalt())})
+                db.users.insert_one({'CHANNEL':channel.id, 'PSWD':bcrypt.hashpw(password.content.encode('utf-8'), bcrypt.gensalt())})
                 await self.bot.send_message(prv_channel, "Password set!")
                     
             except discord.Forbidden:
@@ -106,7 +106,10 @@ class PswdChannels:
         """Allows you to remove a password from that channel"""
         try:
             channel = self.bot.get_channel(channel_id)
-
+            if channel is None:
+                await self.bot.send_message(ctx, "Channel not found!")
+                return
+            
             if isinstance(channel.type, type(discord.ChannelType.text)):
                 perms = discord.PermissionOverwrite(read_messages=True)
                 await self.bot.edit_channel_permissions(channel, ctx.message.server.default_role, perms)
@@ -114,15 +117,12 @@ class PswdChannels:
             elif isinstance(channel.type, type(discord.ChannelType.voice)):
                 perms = discord.PermissionOverwrite(connect=True)
                 await self.bot.edit_channel_permissions(channel, ctx.message.server.default_role, perms)
-
-            db.users.delete_one({"CHANNEL":channel_id})
+            
+            db.users.delete_one({'CHANNEL':channel_id})
             await self.bot.send_message(ctx.message.channel, "Password removed!")
 
         except discord.Forbidden:
             await self.bot.send_message(ctx.message.channel, "Humm... I wasn't able to do that... Check my discord permissions.")
-
-        except:
-            await self.bot.send_message(ctx.message.channel,"Channel not found! Make sure to use the channel ID")
 
 
     @commands.command(pass_context=True, name="enterpassword",)
