@@ -43,11 +43,11 @@ class PswdChannels:
                 if bcrypt.checkpw(password.content.encode('utf-8'), db.users.find_one({'CHANNEL':channel.id})['PSWD']): # Checks entered password against stored password
                     # Causes Type error if no password is set for that channel
 
-                    if isinstance(channel.type, type(discord.ChannelType.text)):
+                    if isinstance(channel.type, type(discord.ChannelType.text)): #text channel
                         perms = discord.PermissionOverwrite(read_messages=True)
                         await self.bot.edit_channel_permissions(channel, ctx.message.author, perms)
 
-                    elif isinstance(channel.type, type(discord.ChannelType.voice)):
+                    elif isinstance(channel.type, type(discord.ChannelType.voice)): #voice channel
                         perms = discord.PermissionOverwrite(connect=True)
                         await self.bot.edit_channel_permissions(channel, ctx.message.author, perms)
 
@@ -67,21 +67,24 @@ class PswdChannels:
 
             try:
                 defualt_role = ctx.message.server.default_role
-
+                
+                #Text channel
                 if isinstance(channel.type, type(discord.ChannelType.text)):
                     perms = discord.PermissionOverwrite(read_messages=True)
                     await self.bot.edit_channel_permissions(channel, ctx.message.author, perms)
 
                     perms = discord.PermissionOverwrite(read_messages=False)
                     await self.bot.edit_channel_permissions(channel, defualt_role, perms)
-                    
+                
+                #Voice channels
                 elif isinstance(channel.type, type(discord.ChannelType.voice)):
                     perms = discord.PermissionOverwrite(connect=True)
                     await self.bot.edit_channel_permissions(channel, ctx.message.author, perms)
 
                     perms = discord.PermissionOverwrite(connect=False)
                     await self.bot.edit_channel_permissions(channel, defualt_role, perms)
-
+                
+                #adds pswd and channel to DB
                 db.users.insert_one({'CHANNEL':channel.id, 'PSWD':bcrypt.hashpw(password.content.encode('utf-8'), bcrypt.gensalt())})
                 await self.bot.send_message(prv_channel, "Password set!")
                     
@@ -104,8 +107,9 @@ class PswdChannels:
     @checks.admin_or_permissions(manage_channels=True)
     async def remove_password(self, ctx, channel_id):
         """Allows you to remove a password from that channel"""
-        try:
+        try: #if issue with perms
             channel = self.bot.get_channel(channel_id)
+            
             if channel is None:
                 await self.bot.send_message(ctx, "Channel not found!")
                 return
@@ -118,6 +122,7 @@ class PswdChannels:
                 perms = discord.PermissionOverwrite(connect=True)
                 await self.bot.edit_channel_permissions(channel, ctx.message.server.default_role, perms)
             
+            #Removes the item from the DB
             db.users.delete_one({'CHANNEL':channel_id})
             await self.bot.send_message(ctx.message.channel, "Password removed!")
 
