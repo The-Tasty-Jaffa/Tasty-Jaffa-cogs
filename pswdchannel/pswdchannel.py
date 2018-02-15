@@ -38,7 +38,7 @@ class PswdChannels:
             await self.bot.send_message(prv_channel, "Sorry but I cannot accept empty passwords")
             return
 
-        if auth==True: #Authenticates passwords
+        if auth is True: #Authenticates passwords
             try:
                 if bcrypt.checkpw(password.content.encode('utf-8'), db.users.find_one({'CHANNEL':channel.id})['PSWD']): # Checks entered password against stored password
                     # Causes Type error if no password is set for that channel
@@ -59,7 +59,7 @@ class PswdChannels:
             except TypeError:
                 await self.bot.send_message(prv_channel,"That channel does not have a password set!")
                 
-        elif auth == False: #Sets passwords
+        elif auth is False: #Sets passwords
 
             if len(password.content) >= 64 or len(password.content) <= 5:
                 await self.bot.send_message(prv_channel, "The password is the wrong length, It must be longer than 5 charactors and shorter than 64")
@@ -89,6 +89,7 @@ class PswdChannels:
                 await self.bot.send_message(prv_channel, "Password set!")
                     
             except discord.Forbidden:
+                #Ask for admins for correct permissions since only admins can set pswd
                 await self.bot.send_message(prv_channel, "An error occured... Make sure I have the right permissions! (permissions required: Manage channels, Manage roles")
     
     @commands.command(pass_context=True, name="setpassword")
