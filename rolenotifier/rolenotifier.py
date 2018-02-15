@@ -23,7 +23,6 @@ class RoleNotifier:
         dataIO.save_json("data/Tasty/AutoRoleDM/settings.json", self.settings)
         
     async def Role_Update_check(self, before, after):
-
         check_roles = [r for r in after.roles if r not in before.roles]
         for role in check_roles:
             try: #Should catch index error (ie don't alert)
