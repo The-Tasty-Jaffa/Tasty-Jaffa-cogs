@@ -95,7 +95,7 @@ role - Adds a permited role to use the speak command"""
         else:
             await self.bot.send_message(ctx.message.channel, "Role not found!")
 
-    @commands.command(name="speak", pass_context=True)
+    @commands.command(name="speak", pass_context=True,no_pm =True)
     async def bot_say(self, ctx, *, text):
         """The bot repeats what you tell it to"""
 
