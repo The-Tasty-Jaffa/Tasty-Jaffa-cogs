@@ -31,8 +31,13 @@ class TempVoice:
                     'role':None,
                     'channel':None,
                     'type':False,
+                    'defualt_name':"{user.nick}"
                     }
-
+            
+            #Avoid breaking things when people update
+            if 'defualt_name' not in self.settings[x.id]:
+                self.settings[x.id]['defualt_name']="{user.nick}"
+            
         dataIO.save_json("data/Tasty/TempVoice/settings.json", self.settings)
     
     #Cog settings
@@ -59,6 +64,12 @@ type <mode_number>
 Sets the mode type for the server
 Mode = 1, Use of a Channel. `[p]setvoice type 1`
 Mode = 2, Use of a command. `[p]setvoice type 2`
+
+name <defualt_channel_name>
+Sets the defualt channel name format to be used when greating a channel
+Use {user.name} for the users name
+Use {user.game} for the users current game they are playing
+Use {user.nick} for the users Nickname in the server
 
 Also make sure I have "move members" and "manage channels" permissions! """, colour=0xff0000)
             
@@ -180,12 +191,12 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
     
     @VoiceSet.command(name="name", pass_context=True)
     @checks.serverowner_or_permissions(manage_channels=True)
-    async def voice_set_default(self,ctx,*,defualt_name="{user.name}")
+    async def voice_set_default(self,ctx,*,defualt_name="{user.nick}")
         """sets the default channel name, resets with no parameters
         Allows for {user.name} for their name
         {user.game} for their currently playing status
         Many other values of user can be used as well"""
-        self.settings[ctx.message.server]['defualt_name'] = defualt_name
+        self.settings[ctx.message.server.id]['defualt_name'] = defualt_name
         await self.say("Default channel name set to `{0}`!".format(defualt_name))
     
     #Voice command
@@ -199,7 +210,7 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
             return
 
         if name =='': #Tests if no name was passed
-            name = self.settings[ctx.message.server]['defualt_name'].format(user=ctx.message.author) #Sets it to the defualt name for the server
+            name = self.settings[ctx.message.server.id]['defualt_name'].format(user=ctx.message.author) #Sets it to the defualt name for the server
 
         server_role = self.settings[ctx.message.server.id]['role']
         if server_role is not None:
@@ -268,6 +279,7 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
             'role':None,
             'channel':None,
             'type':False,
+            'defualt_name':"{user.nick}"
             }
 
     async def AutoTempVoice(self, before, user): #Is called when Someone joins the voice channel - Listener
