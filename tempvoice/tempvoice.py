@@ -204,7 +204,7 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
         
         #If all the requirements are met
         try:
-            perms = discord.PermissionOverwrite(mute_members=True, deafen_members=True, manage_channels=True)#Sets permisions
+            perms = discord.PermissionOverwrite(manage_channels=True)#Sets permisions
             perms = discord.ChannelPermissions(target=ctx.message.author, overwrite=perms)#Sets the channel permissions for the person who sent the message
             channel = await self.bot.create_channel(ctx.message.server, name, perms, type=discord.ChannelType.voice)#creates a channel          
             await self.move_channel_to_category(channel.id, self.settings[channel.server.id]['category'])
@@ -283,7 +283,7 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
                 return
             
             position = user.voice_channel.position
-            perms = discord.PermissionOverwrite(mute_members=True, deafen_members=True, manage_channels=True)#Sets permisions
+            perms = discord.PermissionOverwrite(manage_channels=True)#Sets permisions
             perms = discord.ChannelPermissions(target=user, overwrite=perms)#Sets the channel permissions for the person who sent the message
 
             channel = await self.bot.create_channel(user.voice_channel.server, user.name, perms, type=discord.ChannelType.voice)#creates a channel           
