@@ -178,6 +178,16 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
 
         dataIO.save_json("data/Tasty/TempVoice/settings.json", self.settings)                  
     
+    @VoiceSet.command(name="name", pass_context=True)
+    @checks.serverowner_or_permissions(manage_channels=True)
+    async def voice_set_default(self,ctx,*,defualt_name="{user.name}")
+        """sets the default channel name, resets with no parameters
+        Allows for {user.name} for their name
+        {user.game} for their currently playing status
+        Many other values of user can be used as well"""
+        self.settings[ctx.message.server]['defualt_name'] = defualt_name
+        await self.say("Default channel name set to `{0}`!".format(defualt_name))
+    
     #Voice command
     @commands.command(pass_context=True)
     @commands.cooldown(1, 60, commands.BucketType.user)
@@ -189,7 +199,7 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
             return
 
         if name =='': #Tests if no name was passed
-            name = ctx.message.author.name #Sets it to the name of whoever sent the message
+            name = self.settings[ctx.message.server]['defualt_name'].format(user=ctx.message.author) #Sets it to the defualt name for the server
 
         server_role = self.settings[ctx.message.server.id]['role']
         if server_role is not None:
@@ -204,7 +214,7 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
         
         #If all the requirements are met
         try:
-            perms = discord.PermissionOverwrite(mute_members=True, deafen_members=True, manage_channels=True)#Sets permisions
+            perms = discord.PermissionOverwrite(manage_channels=True)#Sets permisions
             perms = discord.ChannelPermissions(target=ctx.message.author, overwrite=perms)#Sets the channel permissions for the person who sent the message
             channel = await self.bot.create_channel(ctx.message.server, name, perms, type=discord.ChannelType.voice)#creates a channel          
             
@@ -287,10 +297,10 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
                 return
             
             position = user.voice_channel.position
-            perms = discord.PermissionOverwrite(mute_members=True, deafen_members=True, manage_channels=True)#Sets permisions
+            perms = discord.PermissionOverwrite(manage_channels=True)#Sets permisions
             perms = discord.ChannelPermissions(target=user, overwrite=perms)#Sets the channel permissions for the person who sent the message
 
-            channel = await self.bot.create_channel(user.voice_channel.server, user.name, perms, type=discord.ChannelType.voice)#creates a channel           
+            channel = await self.bot.create_channel(user.voice_channel.server, self.settings[ctx.message.server]['defualt_name'].format(user=ctx.message.author, ctx=ctx), perms, type=discord.ChannelType.voice)#creates a channel           
             
             self.check_empty.append(channel.id) #Multidimentional list
             dataIO.save_json("data/Tasty/TempVoice/VoiceChannel.json", self.check_empty)#saves the new file
