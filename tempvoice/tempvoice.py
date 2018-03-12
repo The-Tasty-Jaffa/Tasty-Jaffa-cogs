@@ -2,7 +2,6 @@ import discord, logging, os, asyncio, datetime
 from discord.ext import commands
 from .utils.dataIO import dataIO
 from .utils import checks
-from __main__ import send_cmd_help
 
 #Created by The Tasty Jaffa
 #Requested by idlechatter
@@ -98,7 +97,6 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
             em.set_author(name=ctx.message.server.name, icon_url=ctx.message.server.icon_url)
             em.set_footer(text="This cog can be found [here](https://github.com/The-Tasty-Jaffa/Tasty-Jaffa-cogs/)")
                     
-            await self.bot.send_message(ctx.message.channel, embed=em)
 
     @VoiceSet.command(name="category", pass_context=True)
     @checks.serverowner_or_permissions(manage_channels=True)
@@ -316,7 +314,7 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
             perms = discord.PermissionOverwrite(manage_channels=True)#Sets permisions
             perms = discord.ChannelPermissions(target=user, overwrite=perms)#Sets the channel permissions for the person who sent the message
 
-            channel = await self.bot.create_channel(user.voice_channel.server, self.settings[ctx.message.server]['defualt_name'].format(user=ctx.message.author), perms, type=discord.ChannelType.voice)#creates a channel           
+            channel = await self.bot.create_channel(user.voice_channel.server, self.settings[ctx.message.server]['defualt_name'].format(user=user), perms, type=discord.ChannelType.voice)#creates a channel           
             
             self.check_empty.append(channel.id) #Multidimentional list
             dataIO.save_json("data/Tasty/TempVoice/VoiceChannel.json", self.check_empty)#saves the new file
