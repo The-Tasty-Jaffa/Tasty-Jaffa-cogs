@@ -200,7 +200,7 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
         {user.game} for their currently playing status
         Many other values of user can be used as well"""
         self.settings[ctx.message.server.id]['defualt_name'] = defualt_name
-        await self.say("Default channel name set to `{0}`!".format(defualt_name))
+        await self.bot.say("Default channel name set to `{0}`!".format(defualt_name))
     
     #Voice command
     @commands.command(pass_context=True)
@@ -315,7 +315,7 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
             perms = discord.PermissionOverwrite(manage_channels=True)#Sets permisions
             perms = discord.ChannelPermissions(target=user, overwrite=perms)#Sets the channel permissions for the person who sent the message
 
-            channel = await self.bot.create_channel(user.voice_channel.server, self.settings[ctx.message.server]['defualt_name'].format(user=ctx.message.author, ctx=ctx), perms, type=discord.ChannelType.voice)#creates a channel           
+            channel = await self.bot.create_channel(user.voice_channel.server, self.settings[ctx.message.server]['defualt_name'].format(user=ctx.message.author), perms, type=discord.ChannelType.voice)#creates a channel           
             
             self.check_empty.append(channel.id) #Multidimentional list
             dataIO.save_json("data/Tasty/TempVoice/VoiceChannel.json", self.check_empty)#saves the new file
