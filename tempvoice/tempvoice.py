@@ -191,7 +191,7 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
     
     @VoiceSet.command(name="name", pass_context=True)
     @checks.serverowner_or_permissions(manage_channels=True)
-    async def voice_set_default(self,ctx,*,defualt_name:str="{user.nick}")
+    async def voice_set_default(self,ctx,*,defualt_name:str="{user.nick}"):
         """sets the default channel name, resets with no parameters
         Allows for {user.name} for their name
         {user.game} for their currently playing status
