@@ -200,6 +200,7 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
         {user.game} for their currently playing status
         Many other values of user can be used as well"""
         self.settings[ctx.message.server.id]['defualt_name'] = defualt_name
+        dataIO.save_json("data/Tasty/TempVoice/settings.json", self.settings)
         await self.bot.say("Default channel name set to `{0}`!".format(defualt_name))
     
     #Voice command
