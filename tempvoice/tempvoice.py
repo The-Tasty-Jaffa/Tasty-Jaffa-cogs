@@ -2,6 +2,7 @@ import discord, logging, os, asyncio, datetime
 from discord.ext import commands
 from .utils.dataIO import dataIO
 from .utils import checks
+from __main__ import send_cmd_help
 
 #Created by The Tasty Jaffa
 #Requested by idlechatter
