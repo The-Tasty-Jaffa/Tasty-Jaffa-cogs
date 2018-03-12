@@ -329,7 +329,7 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
             perms = discord.PermissionOverwrite(manage_channels=True)#Sets permisions
             perms = discord.ChannelPermissions(target=user, overwrite=perms)#Sets the channel permissions for the person who sent the message
 
-            channel = await self.bot.create_channel(user.voice_channel.server, self.settings[user.voice_channel.server.id]['defualt_name'].format(user=user), perms, type=discord.ChannelType.voice)#creates a channel           
+            channel = await self.bot.create_channel(user.voice_channel.server, name, perms, type=discord.ChannelType.voice)#creates a channel           
             
             self.check_empty.append(channel.id) #Multidimentional list
             dataIO.save_json("data/Tasty/TempVoice/VoiceChannel.json", self.check_empty)#saves the new file
