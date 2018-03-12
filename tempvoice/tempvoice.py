@@ -361,9 +361,6 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
             dataIO.save_json("data/Tasty/TempVoice/VoiceChannel.json",self.check_empty)# saves new list
             await asyncio.sleep(DELAY)
 
-        await self.bot.send_message(discord.AppInfo.owner, "Channels will no longer be deleted! An issue has ocurred. some INFO: `self.check_empty: {0} | self.bot.get_cog: {1}`".format(self.check_empty, self.bot.get_cog("TempVoice")))
-        #Some instances have issues here (not sure why still)
-
 def check_folders(): #Creates a folder
     if not os.path.exists("data/Tasty/TempVoice"):
         print("Creating data/Tasty/TempVoice folder...")
