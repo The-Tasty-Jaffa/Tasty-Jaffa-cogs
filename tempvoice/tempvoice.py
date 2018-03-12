@@ -194,10 +194,7 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
     @VoiceSet.command(name="name", pass_context=True)
     @checks.serverowner_or_permissions(manage_channels=True)
     async def voice_set_default(self,ctx,*,defualt_name:str="{user.nick}"):
-        """sets the default channel name, resets with no parameters
-        Allows for {user.name} for their name
-        {user.game} for their currently playing status
-        Many other values of user can be used as well"""
+        """sets the default channel name, resets with no parameters"""
         self.settings[ctx.message.server.id]['defualt_name'] = defualt_name
         dataIO.save_json("data/Tasty/TempVoice/settings.json", self.settings)
         await self.bot.say("Default channel name set to `{0}`!".format(defualt_name))
@@ -315,7 +312,7 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
             perms = discord.PermissionOverwrite(manage_channels=True)#Sets permisions
             perms = discord.ChannelPermissions(target=user, overwrite=perms)#Sets the channel permissions for the person who sent the message
 
-            channel = await self.bot.create_channel(user.voice_channel.server, self.settings[ctx.message.server]['defualt_name'].format(user=user), perms, type=discord.ChannelType.voice)#creates a channel           
+            channel = await self.bot.create_channel(user.voice_channel.server, self.settings[user.voice_channel.server.id]['defualt_name'].format(user=user), perms, type=discord.ChannelType.voice)#creates a channel           
             
             self.check_empty.append(channel.id) #Multidimentional list
             dataIO.save_json("data/Tasty/TempVoice/VoiceChannel.json", self.check_empty)#saves the new file
