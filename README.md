@@ -50,5 +50,5 @@ This cog allows servers to permit users to use a fun command "speak". This means
 
 ***
  
-To contact The Tasty Jaffa, speak to him in his discord server! [![discord][https://discordapp.com/assets/e4923594e694a21542a489471ecffa50.svg]](https://discord.gg/MbKwDGC)
+To contact The Tasty Jaffa, speak to him in his discord server! [![discord](https://discordapp.com/assets/e4923594e694a21542a489471ecffa50.svg)](https://discord.gg/MbKwDGC)
 Any suggestions or support for the cogs would be apreciated! 
