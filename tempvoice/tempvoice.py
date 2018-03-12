@@ -50,6 +50,7 @@ class TempVoice:
             info = ''.join('{}{}\n'.format(key, val) for key, val in self.settings[ctx.message.server.id].items())
             em = discord.Embed(title="Tempary voice channel settings", description="""voice [name]
 Creates a Voice channel named after the user who called it or by the optional parameter [name]
+*only works when mode = 2*
 
 channel <channel_id>
 Selects a voice channel which users can join to create a tempary voice channel (Applys to mode = 1 only)
@@ -61,7 +62,7 @@ role <role_name>
 Sets the role which can use the command to make a temporary voice channel -- example - [p]setvoice role autovoice
 
 type <mode_number>
-Sets the mode type for the server
+Sets the mode type for the server, defualts to 2.
 Mode = 1, Use of a Channel. `[p]setvoice type 1`
 Mode = 2, Use of a command. `[p]setvoice type 2`
 
@@ -81,19 +82,21 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
             em.add_field(name="Type", value=rep, inline=False)
             
             try:
-                em.add_field(name="channel",value = ctx.message.server.get_channel(self.settings[ctx.message.server.id]['channel']).name, inline=False)
+                em.add_field(name="Channel",value = ctx.message.server.get_channel(self.settings[ctx.message.server.id]['channel']).name, inline=False)
             except:
-                em.add_field(name="channel",value = "None", inline=False)
+                em.add_field(name="Channel",value = "None", inline=False)
             
             try:
-                em.add_field(name="category",value = ctx.message.server.get_channel(self.settings[ctx.message.server.id]['category']).name, inline=False)
+                em.add_field(name="Category",value = ctx.message.server.get_channel(self.settings[ctx.message.server.id]['category']).name, inline=False)
             except:
-                em.add_field(name="category",value = "None", inline=False)
+                em.add_field(name="Category",value = "None", inline=False)
 
             em.add_field(name="Role", value = get_role(ctx, self.settings[ctx.message.server.id]['role']), inline=False)
             
+            em.add_field(name="Name", value = self.settings[ctx.message.server.id]['defualt_name'])
+            
             em.set_author(name=ctx.message.server.name, icon_url=ctx.message.server.icon_url)
-            em.set_footer(text="This cog can be found here - https://github.com/The-Tasty-Jaffa/Tasty-Jaffa-cogs/")
+            em.set_footer(text="This cog can be found [here](https://github.com/The-Tasty-Jaffa/Tasty-Jaffa-cogs/)")
                     
             await self.bot.send_message(ctx.message.channel, embed=em)
 
