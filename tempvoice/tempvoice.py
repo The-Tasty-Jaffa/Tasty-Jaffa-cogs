@@ -210,7 +210,14 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
             return
 
         if name =='': #Tests if no name was passed
-            name = self.settings[ctx.message.server.id]['defualt_name'].format(user=ctx.message.author) #Sets it to the defualt name for the server
+            if ctx.message.author.nick is not None:
+                name = self.settings[ctx.message.server.id]['defualt_name'].format(user=ctx.message.author) #Sets it to the defualt name for the server
+
+            #If they do not have a nickname
+            else:
+                name = self.settings[ctx.message.server.id]['defualt_name'].replace("nick}","name}").format(user=ctx.message.author) #Sets it to the defualt name
+
+        name = name.replace("None", "Nothing") #Replaces "None" so that channel name reads better
 
         server_role = self.settings[ctx.message.server.id]['role']
         if server_role is not None:
@@ -307,6 +314,16 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
         try:
             if self.settings[user.voice_channel.server.id]['channel']!=user.voice_channel.id:
                 return
+            
+            #set the channel name
+            if user.nick is not None:
+                name = self.settings[user.voice_channel.server.id]['defualt_name'].format(user=user) #Sets it to the defualt name for the server
+
+            #If they do not have a nickname
+            else:
+                name = self.settings[user.voice_channel.server.id]['defualt_name'].replace("nick}","name}").format(user=user) #Sets it to the defualt name
+
+            name = name.replace("None", "Nothing") #Replaces "None" so that channel name reads better
             
             position = user.voice_channel.position
             perms = discord.PermissionOverwrite(manage_channels=True)#Sets permisions
