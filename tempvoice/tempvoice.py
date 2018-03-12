@@ -2,7 +2,6 @@ import discord, logging, os, asyncio, datetime
 from discord.ext import commands
 from .utils.dataIO import dataIO
 from .utils import checks
-from __main__ import send_cmd_help
 
 #Created by The Tasty Jaffa
 #Requested by idlechatter
@@ -97,7 +96,8 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
             
             em.set_author(name=ctx.message.server.name, icon_url=ctx.message.server.icon_url)
             em.set_footer(text="This cog can be found [here](https://github.com/The-Tasty-Jaffa/Tasty-Jaffa-cogs/)")
-                    
+            
+            await self.bot.send_message(ctx.message.channel, embed=em)
 
     @VoiceSet.command(name="category", pass_context=True)
     @checks.serverowner_or_permissions(manage_channels=True)
