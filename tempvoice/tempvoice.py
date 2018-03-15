@@ -290,6 +290,7 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
             'role':None,
             'channel':None,
             'type':False,
+            'category': None,
             'defualt_name':"{user.nick}"
             }
 
