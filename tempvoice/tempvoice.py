@@ -30,6 +30,7 @@ class TempVoice:
                     'role':None,
                     'channel':None,
                     'type':False,
+                    'category':None,
                     'defualt_name':"{user.nick}"
                     }
             
@@ -37,6 +38,9 @@ class TempVoice:
             if 'defualt_name' not in self.settings[x.id]:
                 self.settings[x.id]['defualt_name']="{user.nick}"
             
+            if 'category' not in self.settings[x.id]:
+                self.settings[x.id]['category'] = None
+
         dataIO.save_json("data/Tasty/TempVoice/settings.json", self.settings)
     
     #Cog settings
@@ -237,7 +241,7 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
             channel = await self.bot.create_channel(ctx.message.server, name, perms, type=discord.ChannelType.voice)#creates a channel          
             
             #If a category has been set 
-            if self.settings[channel.server.id]['category'] is not none:
+            if self.settings[channel.server.id]['category'] is not None:
                 await self.move_channel_to_category(channel.id, self.settings[channel.server.id]['category'])
                 
             self.check_empty.append(channel.id) #Multidimentional list
