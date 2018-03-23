@@ -74,7 +74,7 @@ class RoleNotifier:
     @checks.admin_or_permissions(manage_roles=True)
     async def remove_roles(self, ctx, role_name):
         """Removes roles from notifications, use `[p]listroles` to find out what roles are set to be notifified"""
-        await self.bot.send_message("This will remove the `{}` role and people who gain this role will no longer be notified. \n\n__are you sure you want this? **y/n**__".format(msg, role_name))
+        await self.bot.send_message("This will remove the `{}` role and people who gain this role will no longer be notified. \n\n__are you sure you want this? **y/n**__".format(role_name))
         response = await self.bot.wait_for_message(channel = ctx.message.channel, author = ctx.message.author)
         if response.lower() == 'y':
             try:
