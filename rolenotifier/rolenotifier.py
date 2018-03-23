@@ -76,7 +76,7 @@ class RoleNotifier:
         """Removes roles from notifications, use `[p]listroles` to find out what roles are set to be notifified"""
         await self.bot.send_message(ctx.message.channel, "This will remove the `{}` role and people who gain this role will no longer be notified. \n\n__are you sure you want this? **y/n**__".format(role_name))
         response = await self.bot.wait_for_message(channel = ctx.message.channel, author = ctx.message.author)
-        if response.lower() == 'y':
+        if response.content.lower() == 'y':
             try:
                 del self.settings[ctx.message.server.id][role_name]
                 dataIO.save_json("data/Tasty/AutoRoleDM/settings.json", self.settings)
