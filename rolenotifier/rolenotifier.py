@@ -52,23 +52,23 @@ class RoleNotifier:
                 await self.bot.send_message(channel, msg.format(role.name, after.server.name, after.mention, after.name))
 
     #General spesific help with the cog
-    @commands.command(pass_context=True, name="AutoRoleHelp")
+    @commands.group(pass_context=True, name="setnotifiroles")
     @checks.admin_or_permissions(manage_roles=True)
     async def Notification_message_syntax_on_Tasty_Jaffa_cogs(self, ctx): # yes long name :)
-        """Provides infomation on the syntax on how to use this cog"""
-        em = Embed(tile="Infomation on how to use the notification system, use `[p]help` to find right comands")
+        """Command group: Use with no sub command for infomation on the syntax on how to use this cog"""
+        em = Embed(tile="Infomation on how to use the notification system, use `[p]help setnotifiroles` to find right sub commands comands")
         em.add_field(name="Use of `{0}`", value = "The name of the role that was gained", inline=True)
         em.add_field(name="Use of `{1}`", value = "The name of the server that the role was gained in", inline=True)
         em.add_field(name="Use of `{2}`", value = "Mentions the user who gained the role", inline=True)
         em.add_field(name="Use of `{3}`", value = "The name of the user who gained the role", inline=True)
-        em.add_field(name="How to enter the msg", value='example `[p]setroles Member Well done {2}! You have gained {0}!`', inline=False)
+        em.add_field(name="How to enter the msg", value='example `[p]setnotifiroles add Member Well done {2}! You have gained {0}!`', inline=False)
         em.set_footer(text="This cog can be found here - https://github.com/The-Tasty-Jaffa/Tasty-Jaffa-cogs/")
         await self.bot.send_message(ctx.message.channel, embed=em)
     
-    @commands.command(pass_context=True, name="setroles")
+    @setnotifiroles.command(pass_context=True, name="add")
     @checks.admin_or_permissions(manage_roles=True)
     async def set_roles(self, ctx, role_name:str, *, msg:str="Well done {2}! In {1} you have just gained {0} role"):
-        """For documentation of this command check the gitpage, use speech marks for the [msg] paramater"""
+        """For infomation on this command use [p]setnotifiroles with no sub co, use speech marks for the [msg] paramater"""
 
         #Default settings
         channel = None
@@ -108,7 +108,7 @@ class RoleNotifier:
         else:
             await self.bot.send_message(ctx.message.channel, "Aborted! -- Make sure to have a look at the documention on the git repo page!")
 
-    @commands.command(pass_context=True, name="listroles")
+    @setnotifiroles.command(pass_context=True, name="list")
     @checks.admin_or_permissions(manage_roles=True)
     async def list_roles(self, ctx):
         """Lists all the roles that have been given/set a notification for in this server."""
@@ -124,7 +124,7 @@ class RoleNotifier:
         em.set_footer(text="This cog can be found here - https://github.com/The-Tasty-Jaffa/Tasty-Jaffa-cogs/")
         await self.bot.send_message(ctx.message.channel, embed=em)
 
-    @commands.command(name="removerole", pass_context=True)
+    @setnotifiroles.command(name="remove", pass_context=True)
     @checks.admin_or_permissions(manage_roles=True)
     async def remove_roles(self, ctx, role_name):
         """Removes roles from notifications, use `[p]listroles` to find out what roles are set to be notifified"""
@@ -145,7 +145,7 @@ class RoleNotifier:
         }
 
     async def server_leave(self,server):
-        self.settings.pop(server.id)
+        self.settings.remove(server.id)
 
 def check_folders(): #Creates a folder
     if not os.path.exists("data/Tasty/AutoRoleDM"):
