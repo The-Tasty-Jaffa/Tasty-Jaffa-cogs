@@ -2,7 +2,6 @@ import discord, logging, os, asyncio, datetime
 from discord.ext import commands
 from .utils.dataIO import dataIO
 from .utils import checks
-from __main__ import send_cmd_help
 
 #Created by The Tasty Jaffa
 #Requested by idlechatter
@@ -31,7 +30,16 @@ class TempVoice:
                     'role':None,
                     'channel':None,
                     'type':False,
+                    'category':None,
+                    'defualt_name':"{user.nick}"
                     }
+            
+            #Avoid breaking things when people update
+            if 'defualt_name' not in self.settings[x.id]:
+                self.settings[x.id]['defualt_name']="{user.nick}"
+            
+            if 'category' not in self.settings[x.id]:
+                self.settings[x.id]['category'] = None
 
         dataIO.save_json("data/Tasty/TempVoice/settings.json", self.settings)
     
@@ -45,21 +53,22 @@ class TempVoice:
             info = ''.join('{}{}\n'.format(key, val) for key, val in self.settings[ctx.message.server.id].items())
             em = discord.Embed(title="Tempary voice channel settings", description="""voice [name]
 Creates a Voice channel named after the user who called it or by the optional parameter [name]
-
+*only works when mode = 2*
 channel <channel_id>
 Selects a voice channel which users can join to create a tempary voice channel (Applys to mode = 1 only)
-
 category <category_id>
 Sets the category channels should be created under (Applys to mode = 2 only)
-
 role <role_name>
 Sets the role which can use the command to make a temporary voice channel -- example - [p]setvoice role autovoice
-
 type <mode_number>
-Sets the mode type for the server
+Sets the mode type for the server, defualts to 2.
 Mode = 1, Use of a Channel. `[p]setvoice type 1`
 Mode = 2, Use of a command. `[p]setvoice type 2`
-
+name <defualt_channel_name>
+Sets the defualt channel name format to be used when greating a channel
+Use {user.name} for the users name
+Use {user.game} for the users current game they are playing
+Use {user.nick} for the users Nickname in the server
 Also make sure I have "move members" and "manage channels" permissions! """, colour=0xff0000)
             
             if self.settings[ctx.message.server.id]["type"] is True:
@@ -70,20 +79,22 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
             em.add_field(name="Type", value=rep, inline=False)
             
             try:
-                em.add_field(name="channel",value = ctx.message.server.get_channel(self.settings[ctx.message.server.id]['channel']).name, inline=False)
+                em.add_field(name="Channel",value = ctx.message.server.get_channel(self.settings[ctx.message.server.id]['channel']).name, inline=False)
             except:
-                em.add_field(name="channel",value = "None", inline=False)
+                em.add_field(name="Channel",value = "None", inline=False)
             
             try:
-                em.add_field(name="category",value = ctx.message.server.get_channel(self.settings[ctx.message.server.id]['category']).name, inline=False)
+                em.add_field(name="Category",value = ctx.message.server.get_channel(self.settings[ctx.message.server.id]['category']).name, inline=False)
             except:
-                em.add_field(name="category",value = "None", inline=False)
+                em.add_field(name="Category",value = "None", inline=False)
 
             em.add_field(name="Role", value = get_role(ctx, self.settings[ctx.message.server.id]['role']), inline=False)
             
+            em.add_field(name="Name", value = self.settings[ctx.message.server.id]['defualt_name'])
+            
             em.set_author(name=ctx.message.server.name, icon_url=ctx.message.server.icon_url)
-            em.set_footer(text="This cog can be found here - https://github.com/The-Tasty-Jaffa/Tasty-Jaffa-cogs/")
-                    
+            em.set_footer(text="This cog can be found [here](https://github.com/The-Tasty-Jaffa/Tasty-Jaffa-cogs/)")
+            
             await self.bot.send_message(ctx.message.channel, embed=em)
 
     @VoiceSet.command(name="category", pass_context=True)
@@ -178,6 +189,14 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
 
         dataIO.save_json("data/Tasty/TempVoice/settings.json", self.settings)                  
     
+    @VoiceSet.command(name="name", pass_context=True)
+    @checks.serverowner_or_permissions(manage_channels=True)
+    async def voice_set_default(self,ctx,*,defualt_name:str="{user.nick}"):
+        """sets the default channel name, resets with no parameters"""
+        self.settings[ctx.message.server.id]['defualt_name'] = defualt_name
+        dataIO.save_json("data/Tasty/TempVoice/settings.json", self.settings)
+        await self.bot.say("Default channel name set to `{0}`!".format(defualt_name))
+    
     #Voice command
     @commands.command(pass_context=True)
     @commands.cooldown(1, 60, commands.BucketType.user)
@@ -189,7 +208,14 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
             return
 
         if name =='': #Tests if no name was passed
-            name = ctx.message.author.name #Sets it to the name of whoever sent the message
+            if ctx.message.author.nick is not None:
+                name = self.settings[ctx.message.server.id]['defualt_name'].format(user=ctx.message.author) #Sets it to the defualt name for the server
+
+            #If they do not have a nickname
+            else:
+                name = self.settings[ctx.message.server.id]['defualt_name'].replace("nick}","name}").format(user=ctx.message.author) #Sets it to the defualt name
+
+        name = name.replace("None", "Nothing") #Replaces "None" so that channel name reads better
 
         server_role = self.settings[ctx.message.server.id]['role']
         if server_role is not None:
@@ -207,7 +233,11 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
             perms = discord.PermissionOverwrite(manage_channels=True)#Sets permisions
             perms = discord.ChannelPermissions(target=ctx.message.author, overwrite=perms)#Sets the channel permissions for the person who sent the message
             channel = await self.bot.create_channel(ctx.message.server, name, perms, type=discord.ChannelType.voice)#creates a channel          
-            await self.move_channel_to_category(channel.id, self.settings[channel.server.id]['category'])
+            
+            #If a category has been set 
+            if self.settings[channel.server.id]['category'] is not None:
+                await self.move_channel_to_category(channel.id, self.settings[channel.server.id]['category'])
+                
             self.check_empty.append(channel.id) #Multidimentional list
             dataIO.save_json("data/Tasty/TempVoice/VoiceChannel.json", self.check_empty)#saves the new file
             return
@@ -254,6 +284,8 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
             'role':None,
             'channel':None,
             'type':False,
+            'category': None,
+            'defualt_name':"{user.nick}"
             }
 
     async def AutoTempVoice(self, before, user): #Is called when Someone joins the voice channel - Listener
@@ -282,11 +314,21 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
             if self.settings[user.voice_channel.server.id]['channel']!=user.voice_channel.id:
                 return
             
+            #set the channel name
+            if user.nick is not None:
+                name = self.settings[user.voice_channel.server.id]['defualt_name'].format(user=user) #Sets it to the defualt name for the server
+
+            #If they do not have a nickname
+            else:
+                name = self.settings[user.voice_channel.server.id]['defualt_name'].replace("nick}","name}").format(user=user) #Sets it to the defualt name
+
+            name = name.replace("None", "Nothing") #Replaces "None" so that channel name reads better
+            
             position = user.voice_channel.position
             perms = discord.PermissionOverwrite(manage_channels=True)#Sets permisions
             perms = discord.ChannelPermissions(target=user, overwrite=perms)#Sets the channel permissions for the person who sent the message
 
-            channel = await self.bot.create_channel(user.voice_channel.server, user.name, perms, type=discord.ChannelType.voice)#creates a channel           
+            channel = await self.bot.create_channel(user.voice_channel.server, name, perms, type=discord.ChannelType.voice)#creates a channel           
             
             self.check_empty.append(channel.id) #Multidimentional list
             dataIO.save_json("data/Tasty/TempVoice/VoiceChannel.json", self.check_empty)#saves the new file
@@ -331,9 +373,6 @@ Also make sure I have "move members" and "manage channels" permissions! """, col
 
             dataIO.save_json("data/Tasty/TempVoice/VoiceChannel.json",self.check_empty)# saves new list
             await asyncio.sleep(DELAY)
-
-        await self.bot.send_message(discord.Appinfo.owner, "Channels will no longer be deleted! An issue has ocurred. some INFO: `self.check_empty: {0} | self.bot.get_cog: {1}`".format(self.check_empty, self.bot.get_cog("TempVoice")))
-        #Some instances have issues here (not sure why still)
 
 def check_folders(): #Creates a folder
     if not os.path.exists("data/Tasty/TempVoice"):
