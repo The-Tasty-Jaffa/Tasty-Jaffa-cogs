@@ -36,7 +36,6 @@ class RoleNotifier:
     
     #Checks if it needs to send a notification
     async def Role_Update_check(self, before, after):
-
         check_roles = [r for r in after.roles if r not in before.roles]
         for role in check_roles:
             if role.name in self.settings[after.server.id]:
@@ -130,7 +129,9 @@ class RoleNotifier:
         """Removes roles from notifications, use `[p]listroles` to find out what roles are set to be notifified"""
         await self.bot.send_message(ctx.message.channel, "This will remove the `{}` role and people who gain this role will no longer be notified. \n\n__are you sure you want this? **y/n**__".format(role_name))
         response = await self.bot.wait_for_message(channel = ctx.message.channel, author = ctx.message.author)
+
         if 'y' in response.lower():
+
             try:
                 self.settings[ctx.message.server.id].pop(role_name)
                 dataIO.save_json("data/Tasty/AutoRoleDM/settings.json", self.settings)
