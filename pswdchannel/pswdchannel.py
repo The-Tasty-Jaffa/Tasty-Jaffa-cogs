@@ -131,7 +131,8 @@ class PswdChannels:
             await self.bot.send_message(ctx.message.channel, "Humm... I wasn't able to do that... Check my discord permissions.")
 
 
-    @commands.command(pass_context=True, name="enterpassword",)
+    @commands.command(pass_context=True, name="enterpassword")
+    @commands.cooldown(1, 30, commands.BucketType.user)
     async def enter_password(self, ctx, channel_id):
         """Allows you to enter a password for that channel"""
         channel = self.bot.get_channel(channel_id)
