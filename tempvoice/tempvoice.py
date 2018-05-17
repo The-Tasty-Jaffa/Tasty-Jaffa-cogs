@@ -54,21 +54,27 @@ class TempVoice:
             em = discord.Embed(title="Tempary voice channel settings", description="""voice [name]
 Creates a Voice channel named after the user who called it or by the optional parameter [name]
 *only works when mode = 2*
+
 channel <channel_id>
 Selects a voice channel which users can join to create a tempary voice channel (Applys to mode = 1 only)
+
 category <category_id>
 Sets the category channels should be created under (Applys to mode = 2 only)
+
 role <role_name>
 Sets the role which can use the command to make a temporary voice channel -- example - [p]setvoice role autovoice
+
 type <mode_number>
 Sets the mode type for the server, defualts to 2.
 Mode = 1, Use of a Channel. `[p]setvoice type 1`
 Mode = 2, Use of a command. `[p]setvoice type 2`
+
 name <defualt_channel_name>
 Sets the defualt channel name format to be used when greating a channel
 Use {user.name} for the users name
 Use {user.game} for the users current game they are playing
 Use {user.nick} for the users Nickname in the server
+
 Also make sure I have "move members" and "manage channels" permissions! """, colour=0xff0000)
             
             if self.settings[ctx.message.server.id]["type"] is True:
