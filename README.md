@@ -28,7 +28,7 @@ This will send a custom notification message to anyone who gets that role!
 
 `[p]cog install Tasty-cogs rolenotifier`
 
-Once installed, run `[p]AutoroleInfo` for more information about the cog.
+Once installed, run `[p]setroles` for more information about the cog.
 
 ### tempvoice
 This cog allows for the creation of temporary voice channels. These channels, once empty, will be deleted.
