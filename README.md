@@ -57,5 +57,5 @@ Feel free to make any git issues, or even a PR! Any suggestions or support for t
 Oh! The Tasty Jaffa has a discord server too!
 [![discord](https://discordapp.com/assets/e4923594e694a21542a489471ecffa50.svg)](https://discord.gg/MbKwDGC)
 
-###### 2017 - 2018 The Tasty Jaffa
+###### 2017 - 2018 The Tasty Jaffa - contact@thetastyjaffa.com
 ###### No warranty provided with this software
