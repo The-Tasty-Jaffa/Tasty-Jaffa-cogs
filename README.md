@@ -1,12 +1,15 @@
 
 # Tasty Jaffa cogs
-These cogs are simple to use, open source and can be used along side the discord bot [Red](https://github.com/Cog-Creators/Red-DiscordBot/). These are a collection of cogs I have made on various requests. These cogs are intended for use with the open source discord bot [Red](https://github.com/Cog-Creators/Red-DiscordBot/)
+These cogs are simple to use, open source and can be used along side the discord bot [Red](https://github.com/Cog-Creators/Red-DiscordBot/) V2. These are a collection of cogs I have made on various requests. These cogs are intended for use with the open source discord bot [Red](https://github.com/Cog-Creators/Red-DiscordBot/)
 
  
 ***
 
 ## Download cogs
 To download this repo use this command with your bot.
+**WARNING! These cogs are for Redbot V2(EOL) not Redv3**
+
+Find the updated cogs here -> 
 
 `[p]cog repo add Tasty-cogs https://github.com/The-Tasty-Jaffa/Tasty-Jaffa-cogs`
 
@@ -49,13 +52,11 @@ Once installed, run `[p]setsay` for more information about the cog
 
 ## Support
 
-Using Reds inbuilt `help` command might be able to sove your issues. However, nothing is ever perfect... So, if you need support with the cogs you can freely ask for it by either creating a [Github](https://github.com/The-Tasty-Jaffa/Tasty-Jaffa-cogs/issues)/[Gitlab](https://gitlab.com/The_Tasty_Jaffa/Tasty-Jaffa-cogs/issues) issue, asking in the [red cogs support server](https://discord.gg/GET4DVk), [The Tasty Jaffas server](https://discord.gg/MbKwDGC) or even send an [email.](mailto:incoming+The_Tasty_Jaffa/Tasty-Jaffa-cogs@incoming.gitlab.com)
+Using Reds inbuilt `help` command might be able to sove your issues. However, nothing is ever perfect... So, if you need support with the cogs you can freely ask for it by either creating a [Github](https://github.com/The-Tasty-Jaffa/Tasty-Jaffa-cogs/issues)/[Gitlab](https://gitlab.com/The_Tasty_Jaffa/Tasty-Jaffa-cogs/issues) issue, asking in the [red cogs support server](https://discord.gg/GET4DVk) or even send an [email.](mailto:incoming+The_Tasty_Jaffa/Tasty-Jaffa-cogs@incoming.gitlab.com)
 
 ***
 
-Feel free to make any git issues, or even a PR! Any suggestions or support for the cogs would be apreciated. 
-Oh! The Tasty Jaffa has a discord server too!
-[![discord](https://discordapp.com/assets/e4923594e694a21542a489471ecffa50.svg)](https://discord.gg/MbKwDGC)
+Feel free to make any git issues, or even a PR! Any suggestions or support for the cogs would be apreciated.
 
-###### 2017 - 2019 The Tasty Jaffa - contact@thetastyjaffa.com
+###### 2017 - 2021 The Tasty Jaffa - contact@thetastyjaffa.com
 ###### No warranty provided with this software
