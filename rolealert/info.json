@@ -1,0 +1,8 @@
+{
+    "author" : ["The Tasty Jaffa"],
+    "install_msg" : "Role notifier notifies people when they get a role in this server, use `[p]rolealert` to find out more.",
+    "short" : "DMs a user when they gain a role",
+    "description" : "This cog - rolealert will notify users when they get a role, messages can be customised per role and per sever",
+    "tags" : ["utility", "role", "managment", "notifications"]
+}
+
