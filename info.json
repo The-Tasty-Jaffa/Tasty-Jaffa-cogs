@@ -1,7 +1,7 @@
 {
-    "AUTHOR" : "The Tasty Jaffa",
-    "INSTALL_MSG" : "The Tasty Jaffa cogs, a mixture of cogs to help with various tasks - Make sure to join the `red - cog support` server and ask for support in the #support_othercogs channel -- For more information on the cogs, suuggestions and other projects you can find The Tasty Jaffa in his server [here](https://discord.gg/MbKwDGC)",
-    "NAME" : "Tasty-Jaffa-cogs",
-    "SHORT" : "Collection of cogs requested and improved by the community",
-    "DESCRIPTION" : "A collection of cogs made for the community."
+    "author" : ["The Tasty Jaffa"],
+    "install_msg" : "A mixture of cogs to help with various tasks or functions. For more information on the cogs, please make an issue on Github",
+    "name" : "Tasty-cogs",
+    "short" : "Collection of cogs requested and improved by the community",
+    "description" : "A collection of cogs made for the community."
 }

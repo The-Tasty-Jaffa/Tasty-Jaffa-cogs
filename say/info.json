@@ -1,9 +1,0 @@
-{
-    "AUTHOR" : "The Tasty Jaffa",
-    "INSTALL_MSG" : "Allows for people to be asgined permission (roles or individual users) to use the command `[p]speak`, Use `[p]setsay` for info.",
-    "NAME" : "say",
-    "SHORT" : "Bot repeats what it is given",
-    "DESCRIPTION" : "This cog - say will make the bot repeat whatever it was given with settings to allow particular users or roles permission for individual servers.",
-    "TAGS" : ["utility", "fun"],
-    "HIDDEN" : false
-}
