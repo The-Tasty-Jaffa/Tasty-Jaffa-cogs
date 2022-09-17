@@ -40,7 +40,7 @@ Using Reds inbuilt `help` command might be able to sove your issues. However, no
 
 ***
 
-Feel free to make any git issues, or even a PR! Any suggestions or support for the cogs would be apreciated.
+Feel free to make any git issue. Any suggestions or support for the cogs would be apreciated.
 
-###### 2017 - 2021 The Tasty Jaffa - contact@thetastyjaffa.com
+###### 2017 - present The Tasty Jaffa - contact@thetastyjaffa.com
 ###### No warranty provided with this software
