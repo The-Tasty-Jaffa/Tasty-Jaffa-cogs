@@ -78,7 +78,7 @@ class RoleNotifier(commands.Cog):
 
         if ctx.invoked_subcommand is None:
             em = Embed(
-                tile="Infomation on how to use the notification system, use `[p]help rolealert` to find right sub commands comands")
+                title="Infomation on how to use the notification system, use `[p]help rolealert` to find right sub commands comands")
             em.add_field(name="Use of `{role.name}`", value="The name of the role that was gained", inline=False)
             em.add_field(name="Use of `{server.name}`", value="The name of the server that the role was gained in",
                          inline=False)
